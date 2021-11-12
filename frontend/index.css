@@ -1,0 +1,190 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#map {
+    height: 100vh;
+    width: 100%;
+}
+
+.container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(31, 29, 29);
+    color: white
+}
+
+.container .left-side {
+    width: 60%;
+    height: auto;
+}
+
+.container .left-side h1 {
+    font-size: 3.2rem;
+    font-weight: 400;
+    color: hsl(19, 58%, 62%);
+    line-height: 3.5rem;
+    letter-spacing: .5rem;
+    margin-bottom: 20px;
+}
+
+.container form {
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.inputBx {
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.inputBx input {
+    width: 150%;
+    padding: 10px 20px;
+    outline: none;
+    font-weight: 400;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    transform: translate(-20%);
+}
+
+/* button animation */
+
+.buttonBx a {
+    position: relative;
+    display: inline-block;
+    padding: 10px 30px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: hsl(19, 58%, 62%);
+    background: #262c37;
+    font-size: 16px;
+    margin: 10px;
+    letter-spacing: 2px;
+}
+
+.buttonBx a:hover {
+    background: hsl(19, 58%, 62%);
+    color: black;
+    transition: 0.2s;
+    transition-delay: 0.4s;
+    cursor: pointer;
+}
+
+.buttonBx a span {
+    position: absolute;
+    display: block;
+    background: hsl(19, 58%, 62%);
+}
+
+.buttonBx a span:nth-child(1) {
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.25s;
+}
+
+.buttonBx a:hover span:nth-child(1) {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    transition: transform 0.25s;
+}
+
+.buttonBx a span:nth-child(2) {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.25s;
+    transition-delay: 0.1s;
+}
+
+.buttonBx a:hover span:nth-child(2) {
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.25s;
+    transition-delay: 0.1s;
+}
+
+.buttonBx a span:nth-child(3) {
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: botton;
+    transition: transform 0.25s;
+    transition-delay: 0.2s;
+}
+
+.buttonBx a:hover span:nth-child(3) {
+    transform: scaleY(1);
+    transform-origin: top;
+    transition: transform 0.25s;
+    transition-delay: 0.2s;
+}
+
+.buttonBx a span:nth-child(4) {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s;
+    transition-delay: 0.2s;
+}
+
+.buttonBx a:hover span:nth-child(4) {
+    transform: scaleX(1);
+    transform-origin: right;
+    transition: transform 0.25s;
+    transition-delay: 0.3s;
+}
+
+#max {
+    transform: translate(-30%);
+}
+
+#min {
+    transform: translate(80%, -148%);
+}
+
+.rangeBx {
+    /* transform: translate(-15%, -200%); */
+    margin-top: -2rem;
+    margin-left: -3rem;
+}
+
+.rangeBx input {
+    width: 100%;
+}
+
+.labelBx {
+    margin-top: 1rem;
+    margin-left: -1rem;
+    margin-bottom: 1rem;
+}
+
+#go {
+    transform: translate(25%);
+}
+
+.container .right-side {
+    width: 140%;
+    height: auto;
+}
