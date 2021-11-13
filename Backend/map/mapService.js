@@ -52,6 +52,13 @@ async function generateGraph(settings) {
   });
 
   //TODO: add elevation gain between edges
+  graph.forEachLink((link) => {
+    let node1 = graph.getNode(link.fromId);
+    let node2 = graph.getNode(link.toId);
+    let elevation = node2.data.elevation - node1.data.elevation;
+    link.data.elevation = elevation;
+    console.dir(link);
+  });
 
   return graph;
 }
