@@ -55,28 +55,12 @@
             </form>
         </div>
         <div class="right-side">
-            <div id="map">
-            </div>
+            <div id="map"></div>
         </div>
     </div>
-    <script>
-        let map = L.map('map').setView([42.391155, -72.526711], 10);
-        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>';
 
-        const tiles = L.tileLayer("https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=VaXyNVlm8KSGL6fZ5bG8",
-            { attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>' });
-        tiles.addTo(map);
+    <script src="map.js"></script>
 
-        var popup = L.popup();
-
-        function onMapClick(e) {
-            popup
-                .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(map);
-        }
-        map.on('click', onMapClick);
-    </script>
 </body>
 
 </html>
