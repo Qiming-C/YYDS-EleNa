@@ -10,20 +10,16 @@ let g = null;
 async function generateGraph(settings) {
   const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
-
-  convertToGraphType(g);
-  return g;
-}
-
-//convert to graph data structure
-function convertToGraphType(g) {
+  console.log(g.features);
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
   let ways = g.features.filter((obj) => obj.geometry.type === "LineString");
-  console.log(ways);
   //add vertices
   points.forEach((node) => {
-    graph.addNode(node.id, { coordinates: node.geometry.coordinates });
+    graph.addNode(node.id, {
+      coordinates: node.geometry.coordinates,
+      osmId: node.properties.osmId,
+    });
   });
   //TODO: need to add elevation profile to each node
 
@@ -40,11 +36,12 @@ function convertToGraphType(g) {
       latitude: graph.getNode(way.tgt).data.coordinates[1],
       longitude: graph.getNode(way.tgt).data.coordinates[0],
     };
-    console.log(JSON.stringify(end));
+
     let distance = haversine(start, end, { unit: "meter" });
-    console.log(distance);
-    //graph.addLink(way.src, way.tgt, {});
+    graph.addLink(way.src, way.tgt, { distance: distance });
   });
+
+  return graph;
 }
 
 module.exports = { generateGraph };
