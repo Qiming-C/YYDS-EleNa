@@ -1,4 +1,13 @@
-let map = L.map('map').setView([42.391155, -72.526711], 10);
+
+const southWest = L.latLng(42.373775, -72.541988),
+northEast = L.latLng(42.402095, -72.515408),
+bounds = L.latLngBounds(southWest, northEast);
+
+let map = L.map('map', {
+    maxBounds: bounds,   // Then add it here..
+    maxZoom: 18,
+    minZoom: 15
+    }).setView([42.391155, -72.526711], 15);
 
 const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>';
 
