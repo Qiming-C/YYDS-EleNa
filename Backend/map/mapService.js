@@ -20,33 +20,46 @@ async function generateGraph(settings) {
   //add vertices
   points.forEach((node) => {
     graph.addNode(node.id, {
-      coordinates: node.geometry.coordinates,
+      //flip the coordinates ,since it is oppsites of the position
+      coordinates: [node.geometry.coordinates[1], node.geometry.coordinates[0]],
       osmId: node.properties.osmId,
     });
   });
-  //TODO: need to add elevation profile to each node
+
+  //add elevation information to vertices
+  let elevations = await getElevations();
+  let index = 0;
+  graph.forEachNode((node) => {
+    node.data.elevation = elevations.results[index++].elevation;
+  });
 
   //add edges
   ways.forEach((way) => {
     //two nodes coordinates
     //
     let start = {
-      latitude: graph.getNode(way.src).data.coordinates[1],
-      longitude: graph.getNode(way.src).data.coordinates[0],
+      latitude: graph.getNode(way.src).data.coordinates[0],
+      longitude: graph.getNode(way.src).data.coordinates[1],
     };
 
     let end = {
-      latitude: graph.getNode(way.tgt).data.coordinates[1],
-      longitude: graph.getNode(way.tgt).data.coordinates[0],
+      latitude: graph.getNode(way.tgt).data.coordinates[0],
+      longitude: graph.getNode(way.tgt).data.coordinates[1],
     };
 
     let distance = haversine(start, end, { unit: "meter" });
     graph.addLink(way.src, way.tgt, { distance: distance });
   });
 
+  //TODO: add elevation gain between edges
+
   return graph;
 }
 
+/**
+ * Sending the http request to get the elevation gain
+ * @returns the lists of all nodes elevation gain
+ */
 async function getElevations() {
   let body = {
     locations: [],
@@ -54,8 +67,8 @@ async function getElevations() {
 
   graph.forEachNode((node) => {
     body.locations.push({
-      latitude: node.data.coordinates[1],
-      longitude: node.data.coordinates[0],
+      latitude: node.data.coordinates[0],
+      longitude: node.data.coordinates[1],
     });
   });
 
