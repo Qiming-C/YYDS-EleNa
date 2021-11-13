@@ -51,7 +51,7 @@ function onMapClick(e) {
             map.removeLayer(markerOutset);
         }
         markerOutset = L.marker([parseFloat(latlng1), parseFloat(latlng2)])
-            .addTo(map).bindPopup("Source!");
+            .addTo(map).bindPopup("Source!").openPopup();
 
     } else {
         document.getElementById("destination").value = e.latlng.toString();
