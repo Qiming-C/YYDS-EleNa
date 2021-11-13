@@ -1,92 +1,15 @@
-const graphFromOsm = require("graph-from-osm");
-const haversine = require("haversine");
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-let createGraph = require("ngraph.graph");
+let graph = require("./mapModel");
 
-//actual graph we are constructing
-let graph = createGraph();
-//g for holding the original parse data from osm
-let g = null;
-
-//covert OSM xml data into json like graph structure
-//and convert to actual graph data structure
-async function generateGraph(settings) {
-  const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
-  g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
-  //filter out the geometry type with point which is node
-  let points = g.features.filter((obj) => obj.geometry.type === "Point");
-  let ways = g.features.filter((obj) => obj.geometry.type === "LineString");
-  //add vertices
-  points.forEach((node) => {
-    graph.addNode(node.id, {
-      //flip the coordinates ,since it is oppsites of the position
-      coordinates: [node.geometry.coordinates[1], node.geometry.coordinates[0]],
-      osmId: node.properties.osmId,
-    });
-  });
-
-  //add elevation information to vertices
-  let elevations = await getElevations();
-  let index = 0;
+function checkGraph() {
   graph.forEachNode((node) => {
-    node.data.elevation = elevations.results[index++].elevation;
+    console.log(node.data);
   });
-
-  //add edges
-  ways.forEach((way) => {
-    //two nodes coordinates
-    //
-    let start = {
-      latitude: graph.getNode(way.src).data.coordinates[0],
-      longitude: graph.getNode(way.src).data.coordinates[1],
-    };
-
-    let end = {
-      latitude: graph.getNode(way.tgt).data.coordinates[0],
-      longitude: graph.getNode(way.tgt).data.coordinates[1],
-    };
-
-    let distance = haversine(start, end, { unit: "meter" });
-    graph.addLink(way.src, way.tgt, { distance: distance });
-  });
-
-  //TODO: add elevation gain between edges
-  graph.forEachLink((link) => {
-    let node1 = graph.getNode(link.fromId);
-    let node2 = graph.getNode(link.toId);
-    let elevation = node2.data.elevation - node1.data.elevation;
-    link.data.elevation = elevation;
-    console.dir(link);
-  });
-
-  return graph;
 }
 
-/**
- * Sending the http request to get the elevation gain
- * @returns the lists of all nodes elevation gain
- */
-async function getElevations() {
-  let body = {
-    locations: [],
-  };
+//TODO: DFS for finding all the paths
 
-  graph.forEachNode((node) => {
-    body.locations.push({
-      latitude: node.data.coordinates[0],
-      longitude: node.data.coordinates[1],
-    });
-  });
+//TODO: Dijkstra algorithm finding the shortest path
 
-  //send post request to retrieve elevation information
-  let response = await fetch("https://api.open-elevation.com/api/v1/lookup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+//TODO: compute the shortest path with elevation gain awareness
 
-  return await response.json();
-}
-
-module.exports = { generateGraph, getElevations };
+module.exports = { checkGraph };
