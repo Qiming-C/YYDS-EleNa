@@ -22,4 +22,5 @@ app.get("/", (req, res) => {
 app.listen(port, async () => {
   //generate the graph first
   let graph = await mapService.generateGraph(mySettings);
+  mapService.getElevations();
 });
