@@ -11,7 +11,7 @@ const mySettings = {
 
 mapRouter.get("/", async (req, res) => {
   let graph = await mapService.generateGraph(mySettings);
-  res.send("created");
+  res.send(graph);
 });
 
 module.exports = mapRouter;
