@@ -1,6 +1,31 @@
 document.getElementById("max").addEventListener('click', max);
 document.getElementById("min").addEventListener('click', min);
 document.getElementById("go").addEventListener('click', go);
+document.getElementById("go").addEventListener('click', get_id);
+
+function get_id() {
+    let requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+  
+    fetch(
+      "https://nominatim.openstreetmap.org/reverse?lat=42.391155&lon=-72.526711",
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        const myArray = result.split(" ");
+  
+        for (let i in myArray) {
+          if (myArray[i].startsWith("osm_id")) {
+            const osmId = myArray[i].replace(";", "").split("=");
+            console.log(osmId[0] + ": " + osmId[1]);
+          }
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
 
 function go() {
     //get latlngs
