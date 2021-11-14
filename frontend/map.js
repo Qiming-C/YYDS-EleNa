@@ -49,7 +49,7 @@ function get_id(lat, lon, point) {
           OSMID = parseInt(osmId[1].replaceAll('"', ""));
           console.log(OSMID);
           const storage = window.localStorage;
-            storage.setItem(point, OSMID);
+          storage.setItem(point, OSMID);
         }
       }
     })
@@ -81,7 +81,7 @@ function onMapClick(e) {
       .bindPopup("outset!")
       .openPopup();
 
-      get_id(latlng1, latlng2, "outset");
+    get_id(latlng1, latlng2, "outset");
 
   } else {
     document.getElementById("destination").value = e.latlng.toString();
@@ -96,7 +96,7 @@ function onMapClick(e) {
       .bindPopup("Destination!")
       .openPopup();
 
-      get_id(latlng1, latlng2, "Destination");
+    get_id(latlng1, latlng2, "Destination");
   }
 }
 map.on("click", onMapClick);

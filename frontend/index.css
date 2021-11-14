@@ -22,6 +22,13 @@
 .container .left-side {
     width: 60%;
     height: auto;
+    display: inline-block;
+    text-align: center;
+}
+
+.container .right-side {
+    width: 140%;
+    height: auto;
 }
 
 .container .left-side h1 {
@@ -54,7 +61,7 @@
     border: 1px solid #ccc;
     border-radius: 20px;
     margin-bottom: 10px;
-    transform: translate(-20%);
+    transform: translate(-15%);
 }
 
 /* button animation */
@@ -156,17 +163,8 @@
     transition-delay: 0.3s;
 }
 
-#max {
-    transform: translate(22%);
-}
-
-#min {
-    transform: translate(25%, -20%);
-}
-
 .rangeBx {
     margin-top: 0.5rem;
-    transform: translate(-20%);
 }
 
 .rangeBx input {
@@ -177,13 +175,4 @@
     margin-top: 1rem;
     margin-left: -1rem;
     margin-bottom: 1rem;
-}
-
-#go {
-    transform: translate(25%);
-}
-
-.container .right-side {
-    width: 140%;
-    height: auto;
 }
