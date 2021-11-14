@@ -29,6 +29,7 @@ const mapService = require("./mapService");
  */
 mapRouter.post("/max", async (req, res) => {
   mapService.checkGraph();
+  mapService.findShortestPath();
   res.send("Processed");
 });
 
