@@ -29,7 +29,7 @@ let markerOutset = null;
 let markerDestination = null;
 
 //get the OSM ID by lat and lon
-function get_id(lat, lon) {
+function get_id(lat, lon, point) {
   let OSMID = null;
   let requestOptions = {
     method: "GET",
@@ -46,14 +46,14 @@ function get_id(lat, lon) {
       for (let i in myArray) {
         if (myArray[i].startsWith("osm_id")) {
           const osmId = myArray[i].replace(";", "").split("=");
-          console.log(osmId[0] + ": " + osmId[1]);
-          OSMID = osmId[1];
+          OSMID = parseInt(osmId[1].replaceAll('"', ""));
+          console.log(OSMID);
+          const storage = window.localStorage;
+            storage.setItem(point, OSMID);
         }
       }
     })
     .catch((error) => console.log("error", error));
-
-  return OSMID;
 }
 
 function onMapClick(e) {
@@ -68,8 +68,6 @@ function onMapClick(e) {
   latlng1 = words[0].replace(/\s/g, "");
   latlng2 = words[1].replace(/\s/g, "").replace(")", "");
 
-  get_id(latlng1, latlng2);
-
   //set the turns of filling the latlng to the source or destination input fields
   if (counter == 1) {
     document.getElementById("source").value = e.latlng.toString();
@@ -80,8 +78,11 @@ function onMapClick(e) {
     }
     markerOutset = L.marker([parseFloat(latlng1), parseFloat(latlng2)])
       .addTo(map)
-      .bindPopup("Source!")
+      .bindPopup("outset!")
       .openPopup();
+
+      get_id(latlng1, latlng2, "outset");
+
   } else {
     document.getElementById("destination").value = e.latlng.toString();
     counter -= 1;
@@ -94,6 +95,8 @@ function onMapClick(e) {
       .addTo(map)
       .bindPopup("Destination!")
       .openPopup();
+
+      get_id(latlng1, latlng2, "Destination");
   }
 }
 map.on("click", onMapClick);
