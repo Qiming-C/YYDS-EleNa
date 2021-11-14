@@ -2,10 +2,14 @@ document.getElementById("max").addEventListener("click", max);
 document.getElementById("min").addEventListener("click", min);
 document.getElementById("go").addEventListener("click", go);
 
-
 function go() {
   //get latlngs
   let source_l1, source_l2, des_l1, des_l2;
+
+  //get OSM id
+  const storage = window.localStorage;
+  let outset = storage.getItem("outset");
+  let Destination = storage.getItem("Destination");
 
   let words = document
     .getElementById("source")
@@ -34,6 +38,39 @@ function go() {
   //short %
   let sliderValue = document.getElementById("myRange").value;
   console.log(sliderValue);
+
+/**
+    const raw = JSON.stringify({
+        "start": {
+            "coordinates": [
+                latOutset,
+                lonOutset
+            ],
+            "osmId": outset
+        },
+        "end": {
+            "coordinates": [
+                latDestination,
+                lonDestination
+            ],
+        "osmId": Destination
+  }
+});
+
+   const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: raw,
+  };
+
+  fetch("http://localhost:8080/wordScore", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
+
+ */
 }
 function min() {
   document.getElementById("myRange").value = 100;
