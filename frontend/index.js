@@ -2,33 +2,6 @@ document.getElementById("max").addEventListener("click", max);
 document.getElementById("min").addEventListener("click", min);
 document.getElementById("go").addEventListener("click", go);
 
-//get the OSM ID by lat and lon
-function get_id(lat, lon) {
-  let OSMID = null;
-  let requestOptions = {
-    method: "GET",
-    redirect: "follow",
-  };
-
-  fetch(
-    "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lon,
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => {
-      const myArray = result.split(" ");
-      for (let i in myArray) {
-        if (myArray[i].startsWith("osm_id")) {
-          const osmId = myArray[i].replace(";", "").split("=");
-          console.log(osmId[0] + ": " + osmId[1]);
-          OSMID = osmId[1];
-        }
-      }
-    })
-    .catch((error) => console.log("error", error));
-
-  return OSMID;
-}
 
 function go() {
   //get latlngs
