@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-side">
+            <form>
+                <h1>EleNa</h1>
+                <div class="inputBx"><input id="source" type="text" placeholder="Source" /></div>
+
+                <div class="inputBx"><input id="destination" type="text" placeholder="Destination" /></div>
+                <div class="buttonBx">
+                    <a id="max">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Max
+                    </a>
+                </div>
+                <div class="buttonBx">
+                    <a id="min">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Min
+                    </a>
+                </div>
+                <div class="rangeBx"> <input type="range" min="100" max="200" value="150" class="slider" id="myRange">
+                </div>
+                <div class="labelBx"><label id="slider" for=""><label id="sliderValue">150%</label> of elevation
+                        gain</label></div>
+                <div class="buttonBx">
+                    <a id="go">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Go!
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div class="right-side">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="map.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
