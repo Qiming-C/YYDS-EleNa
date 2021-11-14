@@ -1,9 +1,15 @@
-const graphFromOsm = require("graph-from-osm");
+let graph = require("./mapModel");
 
-async function generateGraph(settings) {
-  const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
-  const graph = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
-  return graph;
+function checkGraph() {
+  graph.forEachNode((node) => {
+    console.log(node.data);
+  });
 }
 
-module.exports = { generateGraph };
+//TODO: DFS for finding all the paths
+
+//TODO: Dijkstra algorithm finding the shortest path
+
+//TODO: compute the shortest path with elevation gain awareness
+
+module.exports = { checkGraph };

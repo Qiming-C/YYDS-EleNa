@@ -11,6 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "graph-from-osm": "^1.0.0"
+    "graph-data-structure": "^2.0.0",
+    "graph-from-osm": "^1.0.0",
+    "haversine": "^1.1.1",
+    "ngraph.graph": "^19.1.0",
+    "node-fetch": "^3.1.0"
   }
 }
