@@ -30,28 +30,20 @@ let markerDestination = null;
 
 //get the OSM ID by lat and lon
 function get_id(lat, lon, point) {
-  let OSMID = null;
   let requestOptions = {
     method: "GET",
     redirect: "follow",
   };
 
   fetch(
-    "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lon,
+    "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon,
     requestOptions
   )
     .then((response) => response.text())
     .then((result) => {
-      const myArray = result.split(" ");
-      for (let i in myArray) {
-        if (myArray[i].startsWith("osm_id")) {
-          const osmId = myArray[i].replace(";", "").split("=");
-          OSMID = parseInt(osmId[1].replaceAll('"', ""));
-          console.log(OSMID);
-          const storage = window.localStorage;
-          storage.setItem(point, OSMID);
-        }
-      }
+      const storage = window.localStorage;
+      let data = JSON.parse(result);
+      storage.setItem(point, data.osm_id);
     })
     .catch((error) => console.log("error", error));
 }
@@ -70,13 +62,23 @@ function onMapClick(e) {
 
   //set the turns of filling the latlng to the source or destination input fields
   if (counter == 1) {
+
+    var violetIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
     document.getElementById("source").value = e.latlng.toString();
     counter += 1;
 
     if (markerOutset !== null) {
       map.removeLayer(markerOutset);
     }
-    markerOutset = L.marker([parseFloat(latlng1), parseFloat(latlng2)])
+    markerOutset = L.marker([parseFloat(latlng1), parseFloat(latlng2)], { icon: violetIcon })
       .addTo(map)
       .bindPopup("outset!")
       .openPopup();
@@ -84,6 +86,17 @@ function onMapClick(e) {
     get_id(latlng1, latlng2, "outset");
 
   } else {
+
+    var redIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+
     document.getElementById("destination").value = e.latlng.toString();
     counter -= 1;
 
@@ -91,7 +104,7 @@ function onMapClick(e) {
       map.removeLayer(markerDestination);
     }
 
-    markerDestination = L.marker([parseFloat(latlng1), parseFloat(latlng2)])
+    markerDestination = L.marker([parseFloat(latlng1), parseFloat(latlng2)], { icon: redIcon })
       .addTo(map)
       .bindPopup("Destination!")
       .openPopup();
