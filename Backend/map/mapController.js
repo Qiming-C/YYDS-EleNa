@@ -28,8 +28,9 @@ const mapService = require("./mapService");
  * NOTES: remember to cat data to proper type 
  */
 mapRouter.post("/max", async (req, res) => {
-  mapService.checkGraph();
-  mapService.findShortestPath();
+  //mapService.findShortestPath();
+  let list = mapService.findAllPaths(2, 20);
+  console.log(list);
   res.send("Processed");
 });
 
