@@ -4,13 +4,18 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 let createGraph = require("ngraph.graph");
 
+const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
+const QUINCY_BOX = [-71.0309, 42.26187, -71.02721, 42.26429];
+const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway"];
+const CAR_HIGHWAY = ["primary", "secondary", "tertiary", "road", "residential"];
+
 //configuration for bounding box
 const settings = {
   // Define my settings
-  bbox: [-71.0309, 42.26187, -71.02721, 42.26429],
-  highways: ["primary", "secondary", "tertiary", "residential"],
-  timeout: 600000000,
-  maxContentLength: 1500000000,
+  bbox: UMA_BOX,
+  highways: CAR_HIGHWAY,
+  timeout: 1000000000,
+  maxContentLength: 2500000000,
 };
 
 //actual graph we are constructing
@@ -24,6 +29,11 @@ generateGraph(settings);
 async function generateGraph(settings) {
   const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
+  var fs = require("fs");
+  fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
+    console.log("completed");
+  });
+
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
   let ways = g.features.filter((obj) => obj.geometry.type === "LineString");
@@ -42,6 +52,8 @@ async function generateGraph(settings) {
   graph.forEachNode((node) => {
     node.data.elevation = elevations.results[index++].elevation;
   });
+
+  console.log("number of node" + index);
 
   //add edges
   ways.forEach((way) => {
