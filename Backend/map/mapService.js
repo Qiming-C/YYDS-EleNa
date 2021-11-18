@@ -19,10 +19,15 @@ function findShortestPath() {
     distance(fromNode, toNode, link) {
       return link.data.distance;
     },
+    heuristic(fromNode, toNode) {
+      return toNode.data.elevation - fromNode.data.elevation;
+    },
   });
 
   //path is going backward order
   let shortestPath = pathFinder.find(fromNodeId, toNodeId);
+  console.log(shortestPath);
+  console.log("total elevation is " + calculateElevations(shortestPath));
 }
 
 //TODO: DFS for finding all the paths
@@ -86,5 +91,11 @@ function DFSUtils(source, target, isVisited, pathList, final) {
 //TODO: Dijkstra algorithm finding the shortest path
 
 //TODO: compute the shortest path with elevation gain awareness
+
+//TODO: compute the elevations gain with given path
+function calculateElevations(path) {
+  //let elevation = 0;
+  path.forEach((node) => console.log(node.data.elevation));
+}
 
 module.exports = { checkGraph, findShortestPath, DFSUtils, findAllPaths };
