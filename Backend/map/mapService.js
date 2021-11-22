@@ -30,6 +30,25 @@ function findShortestPath() {
   console.log("total elevation is " + calculateElevations(shortestPath));
 }
 
+//To find the closest node between input node to roadway node osm id
+function closestNode(source, target){
+  let sourceMin = 99999, targetMin = 999999, sourceId=0, targetId=0;
+
+  graph.forEachNode((node) => {
+    if(sourceMin > Math.abs(node.data.coordinates[0] - source.lat) + Math.abs(node.data.coordinates[1] - source.lon)){
+      sourceMin = Math.abs(node.data.coordinates[0] - source.lat) + Math.abs(node.data.coordinates[1] - source.lon);
+      sourceId = node.data.osmId;
+    }
+    if(targetMin > Math.abs(node.data.coordinates[0] - target.lat) + Math.abs(node.data.coordinates[1] - target.lon)){
+      targetMin = Math.abs(node.data.coordinates[0] - target.lat) + Math.abs(node.data.coordinates[1] - target.lon);
+      targetId = node.data.osmId;
+    }
+  });
+
+  return {source: sourceId, target:targetId};
+}
+
+
 //TODO: DFS for finding all the paths
 function findAllPaths(source, target) {
   //boolean type for checking if node is visisted
@@ -37,6 +56,12 @@ function findAllPaths(source, target) {
   graph.forEachNode(function (node) {
     verticeCount++;
   });
+
+  console.log("this is check node");
+  let closeId = closestNode({lat:42.261488, lon:-71.029383}, {lat:42.263394, lon:-71.029712});
+
+  console.log(closeId);
+
   let isVisited = new Array(verticeCount).fill(false);
   //store the path
   let pathList = [];
