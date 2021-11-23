@@ -7,8 +7,11 @@ let minBt = document.getElementById("min");
 let maxBt = document.getElementById("max");
 
 function go() {
-  if (document.getElementById("source").value === "" || document.getElementById("destination").value === "" ||
-    type === null) {
+  if (
+    document.getElementById("source").value === "" ||
+    document.getElementById("destination").value === "" ||
+    type === null
+  ) {
     alert("No source or destination or min or max");
   } else {
     //get latlngs
@@ -33,14 +36,14 @@ function go() {
     des_l2 = words[1].replace(/\s/g, "").replace(")", "");
     console.log(
       "Source : " +
-      source_l1 +
-      " " +
-      source_l2 +
-      "\n" +
-      "Destination : " +
-      des_l1 +
-      " " +
-      des_l2
+        source_l1 +
+        " " +
+        source_l2 +
+        "\n" +
+        "Destination : " +
+        des_l1 +
+        " " +
+        des_l2
     );
 
     //short %
@@ -81,9 +84,41 @@ function go() {
         .catch((error) => console.log("error", error));
     
      */
-  }
 
+    const raw = {
+      start: {
+        coordinates: [source_l1, source_l2],
+        osmId: outset,
+      },
+      end: {
+        coordinates: [des_l1, des_l2],
+        osmId: destination,
+      },
+      percentage: sliderValue,
+    };
+
+    postData(raw, type);
+  }
 }
+
+async function postData(JSONData, maxOrMin) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(JSONData),
+  };
+
+  fetch("http://localhost:3000/api/map/"+maxOrMin, requestOptions).then(
+    async (response) => {
+      const data = await response.text();
+      if (response.status === 200) console.log("success in index");
+      else console.log("fail in index");
+    }
+  );
+}
+
 function min() {
   type = "min";
   minBt.style.background = "hsl(19, 58%, 62%)";

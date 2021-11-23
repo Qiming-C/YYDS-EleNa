@@ -27,8 +27,15 @@ const mapService = require("./mapService");
 }
  * NOTES: remember to cat data to proper type 
  */
+
 mapRouter.post("/max", async (req, res) => {
-  mapService.checkGraph();
+  console.log("this is max");
+  let start = {lat:req.body.start.coordinates[0], lon:req.body.start.coordinates[1]};
+  let target = {lat:req.body.end.coordinates[0], lon:req.body.end.coordinates[1]};
+
+  mapService.findShortestPath();
+  let list = mapService.findAllPaths(2, 10);
+  console.log(list);
   res.send("Processed");
 });
 
