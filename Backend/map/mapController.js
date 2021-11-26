@@ -13,15 +13,13 @@ const mapService = require("./mapService");
     "coordinates": [
       -83,
       42
-    ],
-    "osmId": 23423
+    ]
   },
   "end": {
     "coordinates": [
       -73,
       42
-    ],
-    "osmId": 32938
+    ]
   },
   "percentage": 50
 }
@@ -29,13 +27,19 @@ const mapService = require("./mapService");
  */
 
 mapRouter.post("/max", async (req, res) => {
-  console.log("this is max");
-  let start = {lat:req.body.start.coordinates[0], lon:req.body.start.coordinates[1]};
-  let target = {lat:req.body.end.coordinates[0], lon:req.body.end.coordinates[1]};
+  console.log(req.body);
+  //86-168
+  //flip the coordinates
+  let source = {
+    lat: req.body.start.coordinates[1],
+    lon: req.body.start.coordinates[0],
+  };
+  let target = {
+    lat: req.body.end.coordinates[1],
+    lon: req.body.end.coordinates[0],
+  };
 
-  mapService.findShortestPath();
-  let list = mapService.findAllPaths(2, 10);
-  console.log(list);
+  mapService.findShortestPath(source, target);
   res.send("Processed");
 });
 

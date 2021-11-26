@@ -9,11 +9,14 @@ function checkGraph() {
 
 //TODO: A* algorithm
 //FIXME: need to sync the progress otherwise when user click too quick while server is up will cause some unfinish graph issue
-function findShortestPath() {
-  //73048441
-  let fromNodeId = 2;
-  //73114243
-  let toNodeId = 20;
+function findShortestPath(source, target) {
+  //find the closest node
+  let closestNodes = closestNode(source, target);
+  console.log("closestNodes" + closestNodes);
+
+  let fromNodeId = closestNodes.source;
+
+  let toNodeId = closestNodes.target;
 
   let pathFinder = path.aStar(graph, {
     distance(fromNode, toNode, link) {
@@ -26,49 +29,36 @@ function findShortestPath() {
 
   //path is going backward order
   let shortestPath = pathFinder.find(fromNodeId, toNodeId);
-  console.log(shortestPath);
-  console.log("total elevation is " + calculateElevations(shortestPath));
+  console.dir(shortestPath);
+
+  console.log("total elevation gain:" + calculateElevations(shortestPath));
+  console.log("total distance gain:" + calculateDistance(shortestPath));
 }
 
-//To find the closest node between input node to roadway node osm id
-function closestNode(source, target){
-  let sourceMin = 99999, targetMin = 999999, sourceId=0, targetId=0;
-
-  graph.forEachNode((node) => {
-    if(sourceMin > Math.abs(node.data.coordinates[0] - source.lat) + Math.abs(node.data.coordinates[1] - source.lon)){
-      sourceMin = Math.abs(node.data.coordinates[0] - source.lat) + Math.abs(node.data.coordinates[1] - source.lon);
-      sourceId = node.data.osmId;
-    }
-    if(targetMin > Math.abs(node.data.coordinates[0] - target.lat) + Math.abs(node.data.coordinates[1] - target.lon)){
-      targetMin = Math.abs(node.data.coordinates[0] - target.lat) + Math.abs(node.data.coordinates[1] - target.lon);
-      targetId = node.data.osmId;
-    }
-  });
-
-  return {source: sourceId, target:targetId};
-}
-
-
-//TODO: DFS for finding all the paths
+/**
+ *
+ * @param {*} source
+ * @param {*} target
+ * @returns return a list of path from source to target node
+ */
 function findAllPaths(source, target) {
   //boolean type for checking if node is visisted
   let verticeCount = 0;
-  graph.forEachNode(function (node) {
+  graph.forEachNode(function () {
     verticeCount++;
   });
 
-  console.log("this is check node");
-  let closeId = closestNode({lat:42.261488, lon:-71.029383}, {lat:42.263394, lon:-71.029712});
+  //get the closest vertice from given points
+  let closeId = closestNode(source, target);
 
-  console.log(closeId);
+  //fetch sourced node and target node first
+  let s = graph.getNode(closeId.source);
+  let t = graph.getNode(closeId.target);
 
   let isVisited = new Array(verticeCount).fill(false);
   //store the path
   let pathList = [];
   let final = [];
-  //fetch sourced node and target node first
-  let s = graph.getNode(source);
-  let t = graph.getNode(target);
 
   //add source node to path
   pathList.push(s);
@@ -113,14 +103,83 @@ function DFSUtils(source, target, isVisited, pathList, final) {
   isVisited[source.id] = false;
 }
 
+/**
+ *
+ * @param {*} source
+ * @param {*} target
+ * @returns the source and target id in the graph data strcuture
+ */
+function closestNode(source, target) {
+  let sourceMin = Number.MAX_SAFE_INTEGER,
+    targetMin = Number.MAX_SAFE_INTEGER,
+    sourceId = "",
+    targetId = "";
+
+  graph.forEachNode((node) => {
+    if (
+      sourceMin >
+      Math.abs(node.data.coordinates[0] - source.lat) +
+        Math.abs(node.data.coordinates[1] - source.lon)
+    ) {
+      sourceMin =
+        Math.abs(node.data.coordinates[0] - source.lat) +
+        Math.abs(node.data.coordinates[1] - source.lon);
+      sourceId = node.id;
+    }
+    if (
+      targetMin >
+      Math.abs(node.data.coordinates[0] - target.lat) +
+        Math.abs(node.data.coordinates[1] - target.lon)
+    ) {
+      targetMin =
+        Math.abs(node.data.coordinates[0] - target.lat) +
+        Math.abs(node.data.coordinates[1] - target.lon);
+      targetId = node.id;
+    }
+  });
+
+  return { source: sourceId, target: targetId };
+}
+
 //TODO: Dijkstra algorithm finding the shortest path
 
 //TODO: compute the shortest path with elevation gain awareness
 
 //TODO: compute the elevations gain with given path
 function calculateElevations(path) {
-  //let elevation = 0;
-  path.forEach((node) => console.log(node.data.elevation));
+  let elevation = 0;
+  let prev = path[path.length - 1];
+  for (let i = path.length - 2; i > 0; i--) {
+    let curElevation = prev - path[i];
+    prev = path[i];
+
+    if (curElevation > 0) {
+      elevation += curElevation;
+    }
+  }
+  return elevation;
+}
+
+/**
+ *
+ * @param {*} path the path as list of node
+ *
+ */
+function calculateDistance(path) {
+  let totalDistance = 0;
+
+  // //get list of edges
+  // for (let i = path.length - 1; i > 0; i--) {
+  //   let edge = graph.getLink(9, 4);
+  //   let edge2 = graph.getLink(4, 9);
+  //   console.log(edge);
+  //   console.log(edge2);
+  // }
+  graph.forEachLink((link) => {
+    console.log(link);
+  });
+
+  return totalDistance;
 }
 
 module.exports = { checkGraph, findShortestPath, DFSUtils, findAllPaths };

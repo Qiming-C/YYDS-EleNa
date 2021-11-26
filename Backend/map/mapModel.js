@@ -12,7 +12,7 @@ const CAR_HIGHWAY = ["primary", "secondary", "tertiary", "road", "residential"];
 //configuration for bounding box
 const settings = {
   // Define my settings
-  bbox: QUINCY_BOX,
+  bbox: UMA_BOX,
   highways: CAR_HIGHWAY,
   timeout: 1000000000,
   maxContentLength: 2500000000,
@@ -28,11 +28,13 @@ generateGraph(settings);
 //and convert to actual graph data structure
 async function generateGraph(settings) {
   const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
+
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
-  var fs = require("fs");
-  fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
-    console.log("completed");
-  });
+
+  // var fs = require("fs");
+  // fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
+  //   console.log("completed");
+  // });
 
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
@@ -58,7 +60,7 @@ async function generateGraph(settings) {
   //add edges
   ways.forEach((way) => {
     //two nodes coordinates
-    //
+
     let start = {
       latitude: graph.getNode(way.src).data.coordinates[0],
       longitude: graph.getNode(way.src).data.coordinates[1],
@@ -70,7 +72,14 @@ async function generateGraph(settings) {
     };
 
     let distance = haversine(start, end, { unit: "meter" });
-    graph.addLink(way.src, way.tgt, { distance: distance });
+
+    //check if the road is one way
+    if (way.properties.tags.oneway && way.properties.tags.oneway == "yes") {
+      graph.addLink(way.src, way.tgt, { distance: distance });
+    } else {
+      graph.addLink(way.src, way.tgt, { distance: distance });
+      graph.addLink(way.tgt, way.src, { distance: distance });
+    }
   });
 
   graph.forEachLink((link) => {
