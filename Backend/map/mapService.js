@@ -115,8 +115,8 @@ function DFSUtils(source, target, isVisited, pathList, final) {
 
 /**
  *
- * @param {*} source
- * @param {*} target
+ * @param {*} source source node with lat and lon
+ * @param {*} target target node with lat and lon
  * @returns the source and target id in the graph data strcuture
  */
 function closestNode(source, target) {
@@ -150,8 +150,6 @@ function closestNode(source, target) {
 
   return { source: sourceId, target: targetId };
 }
-
-//TODO: Dijkstra algorithm finding the shortest path
 
 //TODO: compute the shortest path with elevation gain awareness
 
