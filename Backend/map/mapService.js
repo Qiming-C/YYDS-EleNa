@@ -28,6 +28,7 @@ function findShortestPath(source, target) {
 
   //path is going backward order
   let shortestPath = pathFinder.find(fromNodeId, toNodeId);
+
   let elevationGain = calculateElevations(shortestPath);
   let distance = calculateDistance(shortestPath);
   console.dir(shortestPath);
@@ -35,11 +36,8 @@ function findShortestPath(source, target) {
   console.log(`total elevation gain: ${elevationGain} m`);
   console.log(`total distance gain:  ${distance} m`);
 
-  //convert to edges
-  let edges = pathToEdge(shortestPath);
-
   return {
-    path: edges,
+    path: shortestPath,
     distance: distance,
     elevationGain: elevationGain,
   };
