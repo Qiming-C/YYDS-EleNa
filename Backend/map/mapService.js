@@ -158,9 +158,11 @@ function calculateElevations(path) {
   let elevation = 0;
   let edges = pathToEdge(path);
 
-  if (edges.data.elevation > 0) {
-    elevation += edges.data.elevation;
-  }
+  edges.forEach((edge) => {
+    if (edge.data.elevation > 0) {
+      elevation += edge.data.elevation;
+    }
+  });
 
   return elevation;
 }
