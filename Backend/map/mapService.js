@@ -12,7 +12,6 @@ function checkGraph() {
 function findShortestPath(source, target) {
   //find the closest node
   let closestNodes = closestNode(source, target);
-  console.log("closestNodes" + closestNodes);
 
   let fromNodeId = closestNodes.source;
 
@@ -29,10 +28,21 @@ function findShortestPath(source, target) {
 
   //path is going backward order
   let shortestPath = pathFinder.find(fromNodeId, toNodeId);
+  let elevationGain = calculateElevations(shortestPath);
+  let distance = calculateDistance(shortestPath);
   console.dir(shortestPath);
 
-  console.log("total elevation gain:" + calculateElevations(shortestPath));
-  console.log("total distance gain:" + calculateDistance(shortestPath));
+  console.log(`total elevation gain: ${elevationGain} m`);
+  console.log(`total distance gain:  ${distance} m`);
+
+  //convert to edges
+  let edges = pathToEdge(shortestPath);
+
+  return {
+    path: edges,
+    distance: distance,
+    elevationGain: elevationGain,
+  };
 }
 
 /**
@@ -168,18 +178,32 @@ function calculateElevations(path) {
 function calculateDistance(path) {
   let totalDistance = 0;
 
-  // //get list of edges
-  // for (let i = path.length - 1; i > 0; i--) {
-  //   let edge = graph.getLink(9, 4);
-  //   let edge2 = graph.getLink(4, 9);
-  //   console.log(edge);
-  //   console.log(edge2);
-  // }
-  graph.forEachLink((link) => {
-    console.log(link);
+  //get list of edges
+  let edges = pathToEdge(path);
+
+  edges.forEach((edge) => {
+    totalDistance += edge.data.distance;
   });
 
   return totalDistance;
+}
+
+/**
+ *
+ * @param {*} path the node list of path
+ * @return {array} the list of connected edges
+ * @Purpose: given the shortest path, it is reverse order of nodes
+ * this function will have return the list of edges instead of individual nodes
+ * AND IT WILL BE IN ORDER FROM SOURCE EDGE, TO TARGET EDGE
+ */
+function pathToEdge(path) {
+  let edges = [];
+
+  for (let i = path.length - 1; i > 0; i--) {
+    let edge = graph.getLink(path[i].id, path[i - 1].id);
+    edges.push(edge);
+  }
+  return edges;
 }
 
 module.exports = { checkGraph, findShortestPath, DFSUtils, findAllPaths };

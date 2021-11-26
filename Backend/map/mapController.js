@@ -27,8 +27,6 @@ const mapService = require("./mapService");
  */
 
 mapRouter.post("/max", async (req, res) => {
-  console.log(req.body);
-  //86-168
   //flip the coordinates
   let source = {
     lat: req.body.start.coordinates[1],
@@ -39,8 +37,8 @@ mapRouter.post("/max", async (req, res) => {
     lon: req.body.end.coordinates[0],
   };
 
-  mapService.findShortestPath(source, target);
-  res.send("Processed");
+  let result = mapService.findShortestPath(source, target);
+  res.status(200).json(result);
 });
 
 mapRouter.post("/min", async (req, res) => {
