@@ -156,15 +156,12 @@ function closestNode(source, target) {
 //TODO: compute the elevations gain with given path
 function calculateElevations(path) {
   let elevation = 0;
-  let prev = path[path.length - 1];
-  for (let i = path.length - 2; i > 0; i--) {
-    let curElevation = prev - path[i];
-    prev = path[i];
+  let edges = pathToEdge(path);
 
-    if (curElevation > 0) {
-      elevation += curElevation;
-    }
+  if (edges.data.elevation > 0) {
+    elevation += edges.data.elevation;
   }
+
   return elevation;
 }
 
