@@ -76,7 +76,10 @@ async function generateGraph(settings) {
     //check if the road is one way
     if (way.properties.tags.oneway && way.properties.tags.oneway == "yes") {
       graph.addLink(way.src, way.tgt, { distance: distance });
-    } else {
+    } else if (
+      !way.properties.tags.oneway ||
+      way.properties.tags.oneway == "no"
+    ) {
       graph.addLink(way.src, way.tgt, { distance: distance });
       graph.addLink(way.tgt, way.src, { distance: distance });
     }

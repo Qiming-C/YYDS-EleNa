@@ -37,8 +37,9 @@ mapRouter.post("/max", async (req, res) => {
     lon: req.body.end.coordinates[0],
   };
 
-  let result = mapService.findShortestPath(source, target);
-  res.status(200).json(result);
+  //mapService.calculateRequestPath(source, target, 100);
+
+  res.status(200).json("processed");
 });
 
 mapRouter.post("/min", async (req, res) => {

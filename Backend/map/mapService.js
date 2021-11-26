@@ -18,6 +18,7 @@ function findShortestPath(source, target) {
   let toNodeId = closestNodes.target;
 
   let pathFinder = path.aStar(graph, {
+    oriented: true,
     distance(fromNode, toNode, link) {
       return link.data.distance;
     },
@@ -49,19 +50,16 @@ function findShortestPath(source, target) {
  * @param {*} target
  * @returns return a list of path from source to target node
  */
-function findAllPaths(source, target) {
+function findAllPaths(source, target, maxLength) {
   //boolean type for checking if node is visisted
   let verticeCount = 0;
   graph.forEachNode(function () {
     verticeCount++;
   });
 
-  //get the closest vertice from given points
-  let closeId = closestNode(source, target);
-
   //fetch sourced node and target node first
-  let s = graph.getNode(closeId.source);
-  let t = graph.getNode(closeId.target);
+  let s = graph.getNode(source);
+  let t = graph.getNode(target);
 
   let isVisited = new Array(verticeCount).fill(false);
   //store the path
@@ -72,13 +70,23 @@ function findAllPaths(source, target) {
   pathList.push(s);
 
   //call util dfs
-  DFSUtils(s, t, isVisited, pathList, final);
+  DFSUtils(s, t, isVisited, pathList, final, maxLength);
   return final;
 }
 
-function DFSUtils(source, target, isVisited, pathList, final) {
+/**
+ *
+ * @param {*} source
+ * @param {*} target
+ * @param {*} isVisited
+ * @param {*} pathList
+ * @param {*} final
+ * @param {*} maxLength  the maximum length of the path, to prevent the exponential growths
+ * @returns
+ */
+function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
   //check if two node are equal
-  if (source === target) {
+  if (source === target || pathList.length >= maxLength) {
     final.push([...pathList]);
     return;
   }
@@ -97,10 +105,10 @@ function DFSUtils(source, target, isVisited, pathList, final) {
   );
 
   for (let i = 0; i < adjacent.length; i++) {
-    if (!isVisited[adjacent[i]]) {
+    if (!isVisited[adjacent[i].id]) {
       //store current node to pathList
       pathList.push(adjacent[i]);
-      DFSUtils(adjacent[i], target, isVisited, pathList, final);
+      DFSUtils(adjacent[i], target, isVisited, pathList, final, maxLength);
 
       //backtracking
       pathList.splice(pathList.indexOf(adjacent[i]), 1);
@@ -150,6 +158,14 @@ function closestNode(source, target) {
 }
 
 //TODO: compute the shortest path with elevation gain awareness
+function calculateRequestPath(source, target, percentage) {
+  let closest = closestNode(source, target);
+  let fromNodeId = closest.source;
+  let toNodeId = closest.target;
+
+  //compute all the paths
+  let paths = findAllPaths(fromNodeId, toNodeId);
+}
 
 //TODO: compute the elevations gain with given path
 function calculateElevations(path) {
@@ -201,4 +217,10 @@ function pathToEdge(path) {
   return edges;
 }
 
-module.exports = { checkGraph, findShortestPath, DFSUtils, findAllPaths };
+module.exports = {
+  checkGraph,
+  findShortestPath,
+  DFSUtils,
+  findAllPaths,
+  calculateRequestPath,
+};
