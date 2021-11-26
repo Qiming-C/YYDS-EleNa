@@ -11,11 +11,6 @@ function checkGraph() {
 //FIXME: need to sync the progress otherwise when user click too quick while server is up will cause some unfinish graph issue
 function findShortestPath(source, target) {
   //find the closest node
-  let closestNodes = closestNode(source, target);
-
-  let fromNodeId = closestNodes.source;
-
-  let toNodeId = closestNodes.target;
 
   let pathFinder = path.aStar(graph, {
     oriented: true,
@@ -28,7 +23,7 @@ function findShortestPath(source, target) {
   });
 
   //path is going backward order
-  let shortestPath = pathFinder.find(fromNodeId, toNodeId);
+  let shortestPath = pathFinder.find(source, target);
 
   let elevationGain = calculateElevations(shortestPath);
   let distance = calculateDistance(shortestPath);
@@ -86,10 +81,16 @@ function findAllPaths(source, target, maxLength) {
  */
 function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
   //check if two node are equal
-  if (source === target || pathList.length >= maxLength) {
+  if (source === target) {
     final.push([...pathList]);
     return;
   }
+
+  //if exceed the maxLength we still not found the target, we return immediately
+  if (source !== target && pathList.length >= maxLength) {
+    return;
+  }
+
   // mark the current node to be visited
   isVisited[source.id] = true;
 
@@ -158,13 +159,25 @@ function closestNode(source, target) {
 }
 
 //TODO: compute the shortest path with elevation gain awareness
-function calculateRequestPath(source, target, percentage) {
+function calculateRequestPath(source, target, percentage, isMax) {
   let closest = closestNode(source, target);
-  let fromNodeId = closest.source;
-  let toNodeId = closest.target;
+  source = closest.source;
+  target = closest.target;
+
+  //compute the shortest path
+  let shortestPath = findShortestPath(source, target);
+  let maxLength = shortestPath.path.length + 1;
 
   //compute all the paths
-  let paths = findAllPaths(fromNodeId, toNodeId);
+  let paths = findAllPaths(source, target, maxLength);
+
+  //compute all the distance
+  let distances = [];
+  paths.forEach((path) => {
+    distances.push(calculateDistance(path));
+  });
+
+  console.log(distances);
 }
 
 //TODO: compute the elevations gain with given path

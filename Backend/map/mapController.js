@@ -37,8 +37,7 @@ mapRouter.post("/max", async (req, res) => {
     lon: req.body.end.coordinates[0],
   };
 
-  //mapService.calculateRequestPath(source, target, 100);
-
+  mapService.calculateRequestPath(source, target, 100);
   res.status(200).json("processed");
 });
 
