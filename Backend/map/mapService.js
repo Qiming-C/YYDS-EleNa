@@ -174,18 +174,6 @@ function calculateRequestPath(source, target, percentage, isMax) {
   });
   let plot = -1;
   if (isMax) {
-    let current = Number.MAX_SAFE_INTEGER;
-    elevations.forEach((elevation, index) => {
-      let distance = calculateDistance(paths[index], true);
-
-      if (distance <= shortestDistance * (1 + percentage)) {
-        if (current >= elevation) {
-          current = elevation;
-          plot = index;
-        }
-      }
-    });
-  } else {
     let current = Number.MIN_SAFE_INTEGER;
     elevations.forEach((elevation, index) => {
       let distance = calculateDistance(paths[index], true);
@@ -197,7 +185,21 @@ function calculateRequestPath(source, target, percentage, isMax) {
         }
       }
     });
+  } else {
+    let current = Number.MAX_SAFE_INTEGER;
+    elevations.forEach((elevation, index) => {
+      let distance = calculateDistance(paths[index], true);
+
+      if (distance <= shortestDistance * (1 + percentage)) {
+        if (current >= elevation) {
+          current = elevation;
+          plot = index;
+        }
+      }
+    });
   }
+
+  //TODO: if plot -1 meaning no result
 
   //return the result
   let elevationGain = elevations[plot];
