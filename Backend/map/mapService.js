@@ -22,13 +22,6 @@ function findShortestPath(source, target) {
   //path is going backward order
   let shortestPath = pathFinder.find(source, target);
 
-  let elevationGain = calculateElevations(shortestPath);
-  let distance = calculateDistance(shortestPath);
-  // console.dir(shortestPath);
-
-  // console.log(`total elevation gain: ${elevationGain} m`);
-  // console.log(`total distance gain:  ${distance} m`);
-
   return shortestPath;
 }
 
