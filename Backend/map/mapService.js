@@ -8,16 +8,9 @@ function checkGraph() {
 }
 
 //TODO: A* algorithm
-//FIXME: need to sync the progress otherwise when user click too quick while server is up will cause some unfinish graph issue
 function findShortestPath(source, target) {
-  //find the closest node
-  let closestNodes = closestNode(source, target);
-
-  let fromNodeId = closestNodes.source;
-
-  let toNodeId = closestNodes.target;
-
   let pathFinder = path.aStar(graph, {
+    oriented: true,
     distance(fromNode, toNode, link) {
       return link.data.distance;
     },
@@ -27,20 +20,9 @@ function findShortestPath(source, target) {
   });
 
   //path is going backward order
-  let shortestPath = pathFinder.find(fromNodeId, toNodeId);
+  let shortestPath = pathFinder.find(source, target);
 
-  let elevationGain = calculateElevations(shortestPath);
-  let distance = calculateDistance(shortestPath);
-  console.dir(shortestPath);
-
-  console.log(`total elevation gain: ${elevationGain} m`);
-  console.log(`total distance gain:  ${distance} m`);
-
-  return {
-    path: shortestPath,
-    distance: distance,
-    elevationGain: elevationGain,
-  };
+  return shortestPath;
 }
 
 /**
@@ -49,19 +31,16 @@ function findShortestPath(source, target) {
  * @param {*} target
  * @returns return a list of path from source to target node
  */
-function findAllPaths(source, target) {
+function findAllPaths(source, target, maxLength) {
   //boolean type for checking if node is visisted
   let verticeCount = 0;
   graph.forEachNode(function () {
     verticeCount++;
   });
 
-  //get the closest vertice from given points
-  let closeId = closestNode(source, target);
-
   //fetch sourced node and target node first
-  let s = graph.getNode(closeId.source);
-  let t = graph.getNode(closeId.target);
+  let s = graph.getNode(source);
+  let t = graph.getNode(target);
 
   let isVisited = new Array(verticeCount).fill(false);
   //store the path
@@ -72,16 +51,32 @@ function findAllPaths(source, target) {
   pathList.push(s);
 
   //call util dfs
-  DFSUtils(s, t, isVisited, pathList, final);
+  DFSUtils(s, t, isVisited, pathList, final, maxLength);
   return final;
 }
 
-function DFSUtils(source, target, isVisited, pathList, final) {
+/**
+ *
+ * @param {*} source
+ * @param {*} target
+ * @param {*} isVisited
+ * @param {*} pathList
+ * @param {*} final
+ * @param {*} maxLength  the maximum length of the path, to prevent the exponential growths
+ * @returns
+ */
+function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
   //check if two node are equal
   if (source === target) {
     final.push([...pathList]);
     return;
   }
+
+  //if exceed the maxLength we still not found the target, we return immediately
+  if (source !== target && pathList.length >= maxLength) {
+    return;
+  }
+
   // mark the current node to be visited
   isVisited[source.id] = true;
 
@@ -97,10 +92,10 @@ function DFSUtils(source, target, isVisited, pathList, final) {
   );
 
   for (let i = 0; i < adjacent.length; i++) {
-    if (!isVisited[adjacent[i]]) {
+    if (!isVisited[adjacent[i].id]) {
       //store current node to pathList
       pathList.push(adjacent[i]);
-      DFSUtils(adjacent[i], target, isVisited, pathList, final);
+      DFSUtils(adjacent[i], target, isVisited, pathList, final, maxLength);
 
       //backtracking
       pathList.splice(pathList.indexOf(adjacent[i]), 1);
@@ -150,12 +145,71 @@ function closestNode(source, target) {
 }
 
 //TODO: compute the shortest path with elevation gain awareness
+function calculateRequestPath(source, target, percentage, isMax) {
+  let closest = closestNode(source, target);
+  source = closest.source;
+  target = closest.target;
 
-//TODO: compute the elevations gain with given path
-function calculateElevations(path) {
+  //compute the shortest path
+  let shortestPath = findShortestPath(source, target);
+  let shortestDistance = calculateDistance(shortestPath, false);
+  //allowing the DFS find extra three depths more
+  let maxLength = isMax ? shortestPath.length + 2 : shortestPath.length;
+
+  //compute all the paths
+  let paths = findAllPaths(source, target, maxLength);
+
+  //compute all the elevations
+  let elevations = [];
+  paths.forEach((path) => {
+    let elevationGain = calculateElevations(path, true);
+    elevations.push(elevationGain);
+  });
+  let plot = -1;
+  if (isMax) {
+    let current = Number.MIN_SAFE_INTEGER;
+    elevations.forEach((elevation, index) => {
+      let distance = calculateDistance(paths[index], true);
+
+      if (distance <= shortestDistance * (1 + percentage)) {
+        if (current <= elevation) {
+          current = elevation;
+          plot = index;
+        }
+      }
+    });
+  } else {
+    let current = Number.MAX_SAFE_INTEGER;
+    elevations.forEach((elevation, index) => {
+      let distance = calculateDistance(paths[index], true);
+
+      if (distance <= shortestDistance * (1 + percentage)) {
+        if (current >= elevation) {
+          current = elevation;
+          plot = index;
+        }
+      }
+    });
+  }
+
+  //TODO: if plot -1 meaning no result
+
+  //return the result
+  let elevationGain = elevations[plot];
+  let path = paths[plot];
+  let dist = calculateDistance(path, true);
+  return { path: path, elevationGain: elevationGain, distance: dist };
+}
+
+/**
+ *
+ * @param {*} path
+ * @param {*} isForward is given path in forward direction or backward direction
+ * @returns
+ */
+function calculateElevations(path, isForward) {
   let elevation = 0;
-  let edges = pathToEdge(path);
-
+  let edges = isForward ? pathToEdgeForWard(path) : pathToEdgeBackWard(path);
   edges.forEach((edge) => {
     if (edge.data.elevation > 0) {
       elevation += edge.data.elevation;
@@ -170,11 +224,11 @@ function calculateElevations(path) {
  * @param {*} path the path as list of node
  *
  */
-function calculateDistance(path) {
+function calculateDistance(path, isForward) {
   let totalDistance = 0;
 
   //get list of edges
-  let edges = pathToEdge(path);
+  let edges = isForward ? pathToEdgeForWard(path) : pathToEdgeBackWard(path);
 
   edges.forEach((edge) => {
     totalDistance += edge.data.distance;
@@ -191,7 +245,7 @@ function calculateDistance(path) {
  * this function will have return the list of edges instead of individual nodes
  * AND IT WILL BE IN ORDER FROM SOURCE EDGE, TO TARGET EDGE
  */
-function pathToEdge(path) {
+function pathToEdgeBackWard(path) {
   let edges = [];
 
   for (let i = path.length - 1; i > 0; i--) {
@@ -201,4 +255,24 @@ function pathToEdge(path) {
   return edges;
 }
 
-module.exports = { checkGraph, findShortestPath, DFSUtils, findAllPaths };
+/**
+ *
+ * @param {*} path  the node list of graph in forward order unlike the shortest path result
+ * @returns the converted edges
+ */
+function pathToEdgeForWard(path) {
+  let edges = [];
+  for (let i = 1; i < path.length; i++) {
+    let edge = graph.getLink(path[i - 1].id, path[i].id);
+    edges.push(edge);
+  }
+  return edges;
+}
+
+module.exports = {
+  checkGraph,
+  findShortestPath,
+  DFSUtils,
+  findAllPaths,
+  calculateRequestPath,
+};

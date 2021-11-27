@@ -12,7 +12,7 @@ const CAR_HIGHWAY = ["primary", "secondary", "tertiary", "road", "residential"];
 //configuration for bounding box
 const settings = {
   // Define my settings
-  bbox: QUINCY_BOX,
+  bbox: UMA_BOX,
   highways: CAR_HIGHWAY,
   timeout: 1000000000,
   maxContentLength: 2500000000,
@@ -76,7 +76,10 @@ async function generateGraph(settings) {
     //check if the road is one way
     if (way.properties.tags.oneway && way.properties.tags.oneway == "yes") {
       graph.addLink(way.src, way.tgt, { distance: distance });
-    } else {
+    } else if (
+      !way.properties.tags.oneway ||
+      way.properties.tags.oneway == "no"
+    ) {
       graph.addLink(way.src, way.tgt, { distance: distance });
       graph.addLink(way.tgt, way.src, { distance: distance });
     }

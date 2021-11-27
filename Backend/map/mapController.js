@@ -21,7 +21,7 @@ const mapService = require("./mapService");
       42
     ]
   },
-  "percentage": 50
+  "percentage": 0-1
 }
  * NOTES: remember to cat data to proper type 
  */
@@ -37,13 +37,33 @@ mapRouter.post("/max", async (req, res) => {
     lon: req.body.end.coordinates[0],
   };
 
-  let result = mapService.findShortestPath(source, target);
+  let result = mapService.calculateRequestPath(
+    source,
+    target,
+    req.body.percentage,
+    true
+  );
   res.status(200).json(result);
 });
 
 mapRouter.post("/min", async (req, res) => {
-  console.log(req.body);
-  res.send("Processed");
+  //flip the coordinates
+  let source = {
+    lat: req.body.start.coordinates[1],
+    lon: req.body.start.coordinates[0],
+  };
+  let target = {
+    lat: req.body.end.coordinates[1],
+    lon: req.body.end.coordinates[0],
+  };
+
+  let result = mapService.calculateRequestPath(
+    source,
+    target,
+    req.body.percentage,
+    false
+  );
+  res.status(200).json(result);
 });
 
 module.exports = mapRouter;
