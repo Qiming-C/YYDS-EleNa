@@ -181,9 +181,9 @@ function calculateRequestPath(source, target, percentage, isMax) {
       if (distance <= shortestDistance * (1 + percentage)) {
         if (current >= elevation) {
           current = elevation;
+          plot = index;
         }
       }
-      plot = index;
     });
   } else {
     let current = Number.MIN_SAFE_INTEGER;
@@ -193,9 +193,9 @@ function calculateRequestPath(source, target, percentage, isMax) {
       if (distance <= shortestDistance * (1 + percentage)) {
         if (current <= elevation) {
           current = elevation;
+          plot = index;
         }
       }
-      plot = index;
     });
   }
 
