@@ -12,7 +12,7 @@ const CAR_HIGHWAY = ["primary", "secondary", "tertiary", "road", "residential"];
 //configuration for bounding box
 const settings = {
   // Define my settings
-  bbox: QUINCY_BOX,
+  bbox: UMA_BOX,
   highways: CAR_HIGHWAY,
   timeout: 1000000000,
   maxContentLength: 2500000000,
