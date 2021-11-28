@@ -5,29 +5,15 @@ const fetch = (...args) =>
 let createGraph = require("ngraph.graph");
 
 const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
-const CAR_HIGHWAY = [
-  "primary",
-  "motorway",
-  "secondary",
-  "tertiary",
-  "unclassified",
-  "residential",
-  "trunk",
-  "service",
-  "road",
-  "primary_link",
-  "trunk_link",
-  "secondary_link",
-  "tertiary_link",
-];
+const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway", "crossing"];
 
 //configuration for bounding box
 const settings = {
   // Define my settings
   bbox: UMA_BOX,
-  highways: CAR_HIGHWAY,
-  timeout: 2000000000,
-  maxContentLength: 3000000000,
+  highways: PEDESTRAIN_HIGHWAY,
+  timeout: 1000000000,
+  maxContentLength: 2500000000,
 };
 
 //actual graph we are constructing
@@ -103,7 +89,7 @@ async function generateGraph(settings) {
   });
 
   console.log("number of node" + index);
-  console.log("Car Graph is generated ");
+  console.log("Graph is generated ");
 }
 
 /**
