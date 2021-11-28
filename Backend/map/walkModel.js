@@ -5,7 +5,7 @@ const fetch = (...args) =>
 let createGraph = require("ngraph.graph");
 
 const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
-const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway"];
+const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway", "crossing"];
 
 //configuration for bounding box
 const settings = {
