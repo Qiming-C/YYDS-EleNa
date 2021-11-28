@@ -1,6 +1,7 @@
 const express = require("express");
 const mapRouter = express.Router();
 const mapService = require("./mapService");
+const walkService = require("./walkService");
 /**
  * route for computing the maximum elevation gain route
  * @Body: The start node coordinates with osmId
@@ -58,6 +59,46 @@ mapRouter.post("/min", async (req, res) => {
   };
 
   let result = mapService.calculateRequestPath(
+    source,
+    target,
+    req.body.percentage,
+    false
+  );
+  res.status(200).json(result);
+});
+
+mapRouter.post("/walk/max", async (req, res) => {
+  //flip the coordinates
+  let source = {
+    lat: req.body.start.coordinates[1],
+    lon: req.body.start.coordinates[0],
+  };
+  let target = {
+    lat: req.body.end.coordinates[1],
+    lon: req.body.end.coordinates[0],
+  };
+
+  let result = walkService.calculateRequestPath(
+    source,
+    target,
+    req.body.percentage,
+    true
+  );
+  res.status(200).json(result);
+});
+
+mapRouter.post("/walk/min", async (req, res) => {
+  //flip the coordinates
+  let source = {
+    lat: req.body.start.coordinates[1],
+    lon: req.body.start.coordinates[0],
+  };
+  let target = {
+    lat: req.body.end.coordinates[1],
+    lon: req.body.end.coordinates[0],
+  };
+
+  let result = walkService.calculateRequestPath(
     source,
     target,
     req.body.percentage,

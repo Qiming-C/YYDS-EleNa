@@ -1,4 +1,4 @@
-let graph = require("./mapModel");
+let graph = require("./walkModel");
 let path = require("ngraph.path");
 
 function checkGraph() {
@@ -84,7 +84,7 @@ function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
   //TRUE indicates we only want the outgoing edge
   graph.forEachLinkedNode(
     source.id,
-    (linkedNode, link) => {
+    (linkedNode) => {
       adjacent.push(linkedNode);
     },
     true
