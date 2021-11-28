@@ -64,8 +64,6 @@ async function generateGraph(settings) {
     node.data.elevation = elevations.results[index++].elevation;
   });
 
-  console.log("number of node" + index);
-
   //add edges
   ways.forEach((way) => {
     //two nodes coordinates
@@ -100,6 +98,9 @@ async function generateGraph(settings) {
     let elevation = node2.data.elevation - node1.data.elevation;
     link.data.elevation = elevation;
   });
+
+  console.log("number of node" + index);
+  console.log("Graph is generated ");
 }
 
 /**
