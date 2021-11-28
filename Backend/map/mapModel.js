@@ -7,7 +7,16 @@ let createGraph = require("ngraph.graph");
 const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
 const QUINCY_BOX = [-71.0309, 42.26187, -71.02721, 42.26429];
 const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway"];
-const CAR_HIGHWAY = ["primary", "secondary", "tertiary", "road", "residential"];
+const CAR_HIGHWAY = [
+  "primary",
+  "motorway",
+  "secondary",
+  "tertiary",
+  "unclassified",
+  "residential",
+  "trunk",
+  "service",
+];
 
 //configuration for bounding box
 const settings = {
@@ -55,8 +64,6 @@ async function generateGraph(settings) {
     node.data.elevation = elevations.results[index++].elevation;
   });
 
-  console.log("number of node" + index);
-
   //add edges
   ways.forEach((way) => {
     //two nodes coordinates
@@ -91,32 +98,71 @@ async function generateGraph(settings) {
     let elevation = node2.data.elevation - node1.data.elevation;
     link.data.elevation = elevation;
   });
+
+  console.log("number of node" + index);
+  console.log("Graph is generated ");
 }
 
 /**
  * Sending the http request to get the elevation gain
+ * The open elevation Api only supports 230 nodes per request
+ * This function will fetch serveral times in order to get the complete elevation
  * @returns the lists of all nodes elevation gain
  */
 async function getElevations() {
-  let body = {
-    locations: [],
+  let answer = {
+    results: [],
   };
 
+  let locations = [];
+
   graph.forEachNode((node) => {
-    body.locations.push({
+    locations.push({
       latitude: node.data.coordinates[0],
       longitude: node.data.coordinates[1],
     });
   });
 
-  //send post request to retrieve elevation information
-  let response = await fetch("https://api.open-elevation.com/api/v1/lookup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  //request time = body length / 200
+  let time = Math.round(locations.length / 200);
 
-  return await response.json();
+  for (let i = 0; i < time; i++) {
+    let temp = locations.slice(i * 200, (i + 1) * 200);
+    let body = {
+      locations: temp,
+    };
+
+    //send post request to retrieve elevation information
+    let response = await fetch("https://api.open-elevation.com/api/v1/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    let result = await response.json();
+
+    answer.results.push(...result.results);
+  }
+
+  //there will be leftover node not being returned
+  if (locations.length > time * 200) {
+    let temp = locations.slice(time * 200, locations.length);
+    let body = {
+      locations: temp,
+    };
+    //send post request to retrieve elevation information
+    let response = await fetch("https://api.open-elevation.com/api/v1/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    let result = await response.json();
+
+    answer.results.push(...result.results);
+  }
+
+  return answer;
 }
 
 module.exports = graph;
