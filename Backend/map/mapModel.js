@@ -59,7 +59,6 @@ async function generateGraph(settings) {
 
   //add elevation information to vertices
   let elevations = await getElevations();
-  console.log(elevations);
   let index = 0;
   graph.forEachNode((node) => {
     node.data.elevation = elevations.results[index++].elevation;
@@ -105,6 +104,8 @@ async function generateGraph(settings) {
 
 /**
  * Sending the http request to get the elevation gain
+ * The open elevation Api only supports 230 nodes per request
+ * This function will fetch serveral times in order to get the complete elevation
  * @returns the lists of all nodes elevation gain
  */
 async function getElevations() {
@@ -138,11 +139,12 @@ async function getElevations() {
     });
 
     let result = await response.json();
+
     answer.results.push(...result.results);
   }
 
   //there will be leftover node not being returned
-  if (locations.length - time * 200 > 0) {
+  if (locations.length > time * 200) {
     let temp = locations.slice(time * 200, locations.length);
     let body = {
       locations: temp,
