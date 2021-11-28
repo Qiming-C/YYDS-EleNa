@@ -5,8 +5,6 @@ const fetch = (...args) =>
 let createGraph = require("ngraph.graph");
 
 const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
-const QUINCY_BOX = [-71.0309, 42.26187, -71.02721, 42.26429];
-const PEDESTRAIN_HIGHWAY = ["pedestrian", "residential", "footway"];
 const CAR_HIGHWAY = [
   "primary",
   "motorway",
