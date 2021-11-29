@@ -16,6 +16,10 @@ const PEDESTRAIN_HIGHWAY = [
   "road",
   "tertiary",
   "secondary",
+  "living_street",
+  "steps",
+  "track",
+  "oppsite_track",
 ];
 
 //configuration for bounding box
