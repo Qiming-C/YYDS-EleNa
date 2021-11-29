@@ -15,6 +15,11 @@ const PEDESTRAIN_HIGHWAY = [
   "sidewalk",
   "road",
   "tertiary",
+  "secondary",
+  "living_street",
+  "steps",
+  "track",
+  "oppsite_track",
 ];
 
 //configuration for bounding box
@@ -39,10 +44,10 @@ async function generateGraph(settings) {
 
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
 
-  // var fs = require("fs");
-  // fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
-  //   console.log("completed");
-  // });
+  var fs = require("fs");
+  fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
+    console.log("completed");
+  });
 
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
