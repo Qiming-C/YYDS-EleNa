@@ -20,14 +20,19 @@
 }
 
 .container .left-side {
-    width: 60%;
+    width: 80%;
     height: auto;
     display: inline-block;
     text-align: center;
 }
 
 .container .right-side {
-    width: 140%;
+    width: 100%;
+    height: auto;
+}
+
+.container .message-side {
+    width: 60%;
     height: auto;
 }
 
@@ -51,6 +56,11 @@
 .inputBx {
     margin-bottom: 5px;
     display: inline-block;
+}
+
+.middle-button-div {
+    display: inline-flex;
+    justify-content: center;
 }
 
 .inputBx input {
@@ -175,4 +185,23 @@
     margin-top: 1rem;
     margin-left: -1rem;
     margin-bottom: 1rem;
+}
+
+@media only screen and (max-width: 1400px) {
+    .container .left-side {
+        width: 40%;
+        height: auto;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .container .right-side {
+        width: 60%;
+        height: auto;
+    }
+
+    .container .message-side {
+        width: 0%;
+        height: auto;
+    }
 }

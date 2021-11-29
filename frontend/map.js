@@ -20,6 +20,17 @@ const tiles = L.tileLayer(
 );
 tiles.addTo(map);
 
+let latlngs = [
+  [42.373775, -72.541988],
+  [42.373775, -72.515408],
+  [42.402095, -72.515408],
+  [42.402095, -72.541988],
+  [42.373775, -72.541988]
+];
+
+polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
+
+
 var popup = L.popup();
 //source or destination record counter
 var counter = 1;
