@@ -76,6 +76,12 @@ function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
     return;
   }
 
+  //this prevent if two points are too far away, we only interested in the first 1000 paths
+  //2000 is still fine, but we want to have quicker reponse to the front end
+  if (final.length > 1000) {
+    return;
+  }
+
   // mark the current node to be visited
   isVisited[source.id] = true;
 
@@ -152,7 +158,7 @@ function calculateRequestPath(source, target, percentage, isMax) {
   let shortestPath = findShortestPath(source, target);
   let shortestDistance = calculateDistance(shortestPath, false);
   //allowing the DFS find extra three depths more
-  let maxLength = isMax ? shortestPath.length + 2 : shortestPath.length;
+  let maxLength = shortestPath.length;
 
   //compute all the paths
   let paths = findAllPaths(source, target, maxLength);

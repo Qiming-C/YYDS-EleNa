@@ -76,6 +76,10 @@ function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
     return;
   }
 
+  if (final.length > 1) {
+    return;
+  }
+
   // mark the current node to be visited
   isVisited[source.id] = true;
 
