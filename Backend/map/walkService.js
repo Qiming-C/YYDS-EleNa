@@ -174,8 +174,15 @@ function calculateRequestPath(source, target, percentage, isMax) {
   console.log("distance+ " + walkDistance);
 
   if (walkDistance > 500 || shortestPath.length > 50) {
+    let path = pathToEdgeBackWard(shortestPath);
+    let nodes = [];
+    path.forEach((path) => {
+      let node = graph.getNode(path.fromId);
+      nodes.push(node);
+    });
+
     return {
-      path: shortestPath,
+      path: nodes,
       elevationGain: shortestElevationGain,
       distance: shortestDistance,
     };

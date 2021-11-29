@@ -43,10 +43,7 @@ async function generateGraph(settings) {
 
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
 
-  // var fs = require("fs");
-  // fs.writeFile("map.geojson", JSON.stringify(g), "utf8", (err) => {
-  //   console.log("completed");
-  // });
+0
 
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
