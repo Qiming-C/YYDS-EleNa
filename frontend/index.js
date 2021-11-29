@@ -5,6 +5,8 @@ document.getElementById("go").addEventListener("click", go);
 let type = null;
 let minBt = document.getElementById("min");
 let maxBt = document.getElementById("max");
+const storage = window.localStorage;
+let polyline = 1;
 
 function go() {
   if (
@@ -34,69 +36,25 @@ function go() {
       .split(",");
     des_l1 = words[0].replace(/\s/g, "");
     des_l2 = words[1].replace(/\s/g, "").replace(")", "");
-    console.log(
-      "Source : " +
-        source_l1 +
-        " " +
-        source_l2 +
-        "\n" +
-        "Destination : " +
-        des_l1 +
-        " " +
-        des_l2
-    );
 
-    //short %
+    //short 
     let sliderValue = document.getElementById("myRange").value;
-    console.log(sliderValue);
-    console.log(type + "   go");
+    sliderValue = (sliderValue - 100) / 100;
 
-    /**
-        const raw = JSON.stringify({
-            "start": {
-                "coordinates": [
-                    source_l1,
-                    source_l2
-                ],
-                "osmId": outset
-            },
-            "end": {
-                "coordinates": [
-                    des_l1,
-                    des_l2
-                ],
-            "osmId": destination
-            }, 
-            "percentage":sliderValue
-    });
-    
-       const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: raw,
-      };
-    
-      fetch("http://localhost:8080/wordScore", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
-    
-     */
-
+    // raw data set 
     const raw = {
       start: {
-        coordinates: [source_l1, source_l2],
+        coordinates: [source_l2, source_l1],
         osmId: outset,
       },
       end: {
-        coordinates: [des_l1, des_l2],
+        coordinates: [des_l2, des_l1],
         osmId: destination,
       },
       percentage: sliderValue,
     };
 
+    // call backend fetch data for node
     postData(raw, type);
   }
 }
@@ -110,10 +68,20 @@ async function postData(JSONData, maxOrMin) {
     body: JSON.stringify(JSONData),
   };
 
-  fetch("http://localhost:3000/api/map/"+maxOrMin, requestOptions).then(
+  fetch("http://localhost:3000/api/map/" + maxOrMin, requestOptions).then(
     async (response) => {
-      const data = await response.text();
-      if (response.status === 200) console.log("success in index");
+      if (response.status === 200) {
+        const data = (await response.json());
+        let latlngs = [
+          [JSONData.start.coordinates[1], JSONData.start.coordinates[0]]
+        ];
+        for (let i = 0; i < data.path.length; i++) {
+          latlngs.push([data.path[i].data.coordinates[0], data.path[i].data.coordinates[1]]);
+        }
+        latlngs.push([JSONData.end.coordinates[1], JSONData.end.coordinates[0]]);
+
+        polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+      }
       else console.log("fail in index");
     }
   );
