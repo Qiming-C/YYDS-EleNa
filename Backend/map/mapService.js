@@ -160,6 +160,10 @@ function calculateRequestPath(source, target, percentage, isMax) {
   //allowing the DFS find extra three depths more
   let maxLength = shortestPath.length;
 
+  if (shortestPath.lenght == 0) {
+    return null;
+  }
+
   //compute all the paths
   let paths = findAllPaths(source, target, maxLength);
 
