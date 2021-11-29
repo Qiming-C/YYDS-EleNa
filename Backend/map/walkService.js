@@ -1,5 +1,6 @@
 let graph = require("./walkModel");
 let path = require("ngraph.path");
+const haversine = require("haversine");
 
 function checkGraph() {
   graph.forEachNode((node) => {
@@ -151,52 +152,78 @@ function calculateRequestPath(source, target, percentage, isMax) {
   //compute the shortest path
   let shortestPath = findShortestPath(source, target);
   let shortestDistance = calculateDistance(shortestPath, false);
-  //allowing the DFS find extra three depths more
-  let maxLength = isMax ? shortestPath.length + 2 : shortestPath.length;
 
-  //compute all the paths
-  let paths = findAllPaths(source, target, maxLength);
+  let shortestElevationGain = calculateElevations(shortestPath, false);
 
-  //compute all the elevations
-  let elevations = [];
-  paths.forEach((path) => {
-    let elevationGain = calculateElevations(path, true);
-    elevations.push(elevationGain);
-  });
-  let plot = -1;
-  if (isMax) {
-    let current = Number.MIN_SAFE_INTEGER;
-    elevations.forEach((elevation, index) => {
-      let distance = calculateDistance(paths[index], true);
+  //compute the distance between two nodes, if they are 1000 meters long, we only return the shortest paths to limit the computation power
 
-      if (distance <= shortestDistance * (1 + percentage)) {
-        if (current <= elevation) {
-          current = elevation;
-          plot = index;
-        }
-      }
-    });
+  let s = graph.getNode(source);
+  let e = graph.getNode(target);
+
+  const start = {
+    latitude: s.data.coordinates[0],
+    longitude: s.data.coordinates[1],
+  };
+
+  const end = {
+    latitude: e.data.coordinates[0],
+    longitude: s.data.coordinates[1],
+  };
+
+  let walkDistance = haversine(start, end, { unit: "meter" });
+  console.log("distance+ " + walkDistance);
+
+  if (walkDistance > 500 || shortestPath.length > 50) {
+    return {
+      path: shortestPath,
+      elevationGain: shortestElevationGain,
+      distance: shortestDistance,
+    };
   } else {
-    let current = Number.MAX_SAFE_INTEGER;
-    elevations.forEach((elevation, index) => {
-      let distance = calculateDistance(paths[index], true);
+    //compute all the paths
+    let paths = findAllPaths(source, target, shortestPath.length);
 
-      if (distance <= shortestDistance * (1 + percentage)) {
-        if (current >= elevation) {
-          current = elevation;
-          plot = index;
-        }
-      }
+    //compute all the elevations
+    let elevations = [];
+    paths.forEach((path) => {
+      let elevationGain = calculateElevations(path, true);
+      elevations.push(elevationGain);
     });
+    let plot = -1;
+    if (isMax) {
+      let current = Number.MIN_SAFE_INTEGER;
+      elevations.forEach((elevation, index) => {
+        let distance = calculateDistance(paths[index], true);
+
+        if (distance <= shortestDistance * (1 + percentage)) {
+          if (current <= elevation) {
+            current = elevation;
+            plot = index;
+          }
+        }
+      });
+    } else {
+      let current = Number.MAX_SAFE_INTEGER;
+      elevations.forEach((elevation, index) => {
+        let distance = calculateDistance(paths[index], true);
+
+        if (distance <= shortestDistance * (1 + percentage)) {
+          if (current >= elevation) {
+            current = elevation;
+            plot = index;
+          }
+        }
+      });
+    }
+
+    //TODO: if plot -1 meaning no result
+
+    //return the result
+    let elevationGain = elevations[plot];
+    let path = paths[plot];
+    let dist = calculateDistance(path, true);
+    return { path: path, elevationGain: elevationGain, distance: dist };
   }
-
-  //TODO: if plot -1 meaning no result
-
-  //return the result
-  let elevationGain = elevations[plot];
-  let path = paths[plot];
-  let dist = calculateDistance(path, true);
-  return { path: path, elevationGain: elevationGain, distance: dist };
 }
 
 /**
@@ -227,7 +254,7 @@ function calculateDistance(path, isForward) {
 
   //get list of edges
   let edges = isForward ? pathToEdgeForWard(path) : pathToEdgeBackWard(path);
-
+  console.log(edges);
   edges.forEach((edge) => {
     totalDistance += edge.data.distance;
   });
