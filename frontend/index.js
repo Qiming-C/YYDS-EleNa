@@ -83,6 +83,11 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         console.log(data);
         if (data.path.length === 0) {
           alert("No path");
+          document.getElementById("table_distance").innerHTML = "";
+          document.getElementById("table_elevation").innerHTML = "";
+          document.getElementById("table_percentage").innerHTML = "";
+          document.getElementById("table_node").innerHTML = "";
+
         } else {
           let latlngs = [
             [JSONData.start.coordinates[1], JSONData.start.coordinates[0]]
@@ -93,6 +98,13 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
           latlngs.push([JSONData.end.coordinates[1], JSONData.end.coordinates[0]]);
 
           polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+
+          //render the route info to table
+          document.getElementById("table_distance").innerHTML = (Math.round(data.distance)/1000).toString()+" mile(s)";
+          document.getElementById("table_elevation").innerHTML = (Math.round(data.elevationGain)).toString()+" meter(s)";
+          document.getElementById("table_percentage").innerHTML = "X %";
+          document.getElementById("table_node").innerHTML = (data.path.length+2).toString()+" node(s)";
+
         }
 
       }
