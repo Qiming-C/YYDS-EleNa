@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
@@ -14,6 +14,8 @@
         crossorigin=""></script>
     <link rel="stylesheet" href="index.css">
     <link rel="shortcut icon" type="image/jpg" href="./image/route_icon.jpg" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -85,29 +87,37 @@
                 <p>Route detail: <strong class="route_type" id="Route_title">max/min by walk/car</strong></p>
 
                 <br>
-                <table style="width:100%">
+                <table style="margin-left:5px;width:98.5%;height:13em; border:1px solid hsl(19, 58%, 62%);"
+                    class="table">
                     <tr>
-                        <td><img src="./image/distance.jpg" width="40" height="40">
-                            <p>Distance</p><br>
+                        <td>
+                            <!-- <img src="./image/distance.jpg" width="40" height="40"> -->
+                            <!-- <p> <img src="./image/distance.jpg" width="40" height="40">Distance</p> -->
+                            <p> <i class="bi bi-joystick" style="padding-right: 1em;"></i>Distance
+                            </p>
+
                         </td>
                         <td id="table_distance">miles</td>
                     </tr>
                     <tr>
-                        <td><img src="./image/elevation_gain.jpg" width="40" height="40">
-                            <p>Elevation</p><br>
+                        <td>
+                            <!-- <img src="./image/elevation_gain.jpg" width="40" height="40"> -->
+                            <p> <i class="bi bi-cloud-upload" style="padding-right: 1em;"></i>Elevation</p>
                         </td>
                         <td id="table_elevation">meters</td>
 
                     </tr>
                     <tr>
-                        <td><img src="./image/percentage_icon.jpg" width="40" height="40">
-                            <p>Percentage</p><br>
+                        <td>
+                            <!-- <img src="./image/percentage_icon.jpg" width="40" height="40"> -->
+                            <p><i class="bi bi-percent" style="padding-right: 1em;"></i>Percentage</p>
                         </td>
                         <td id="table_percentage">%</td>
                     </tr>
                     <tr>
-                        <td><img src="./image/node_icon.jpg" width="40" height="40">
-                            <p>Stop's Number</p><br>
+                        <td>
+                            <!-- <img src="./image/node_icon.jpg" width="40" height="40"> -->
+                            <p><i class="bi bi-diagram-3" style="padding-right: 1em;"></i>Stop's Number</p>
                         </td>
                         <td id="table_node">stop(s)</td>
                     </tr>
@@ -119,7 +129,46 @@
             <div id="map"></div>
         </div>
         <div class="message-side">
+            <h1 style="font-size: 3em; font-weight: bold; border-bottom: 2px solid grey;">About Us </h1>
+            <div style="font-size: 1.5em;font-weight: bold;">
+                <label>Group Name</label>
+            </div>
+            <div>
+                <label>YY_DS</label>
+            </div>
+            <div style=" font-size: 1.5em;font-weight: bold;">
+                <label>Project Description</label>
+            </div>
+            <div>
+                <label>Map navigation system with altitude(elevation) gain awareness. This project is designed to find
+                    the
+                    minimum elevation for hikers, bikers, runners, or for more intense workout (maximum
+                    elevation)</label>
+            </div>
+            <div style="font-size: 1.5em;font-weight: bold;">
+                <label>Group Member</label>
+            </div>
+            <div>
+                <label>Qiming Chen</label>
+            </div>
+            <div>
+                <i class="bi bi-github" id="Chen-github"></i>
+            </div>
+            <div>
+                <label>Shing Hong Lau</label>
+            </div>
+            <div>
+                <i class="bi bi-github" id="Lau-github"></i>
+            </div>
+            <div>
+                <label>Jiafeng Li</label>
+            </div>
+            <div>
+                <i class="bi bi-github" id="Li-github"></i>
+            </div>
+
         </div>
+    </div>
     </div>
 
     <script src="map.js"></script>
