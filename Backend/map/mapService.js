@@ -1,6 +1,6 @@
 let graph = require("./mapModel");
 let path = require("ngraph.path");
-let manhattan = require("manhattan-distance");
+let { harversine_heuristic } = require("./heuristic");
 
 function checkGraph() {
   graph.forEachNode((node) => {
@@ -15,15 +15,7 @@ function findShortestPath(source, target) {
       return link.data.distance;
     },
     heuristic(fromNode, toNode) {
-      //manhattan distance
-      return (
-        manhattan(
-          fromNode.data.coordinates[0],
-          fromNode.data.coordinates[1],
-          toNode.data.coordinates[0],
-          toNode.data.coordinates[1]
-        ).slice(0, -2) * 1000
-      );
+      return harversine_heuristic(fromNode, toNode);
     },
   });
 
