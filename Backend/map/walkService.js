@@ -173,7 +173,7 @@ function calculateRequestPath(source, target, percentage, isMax) {
 
   //compute the shortest path
   let shortestPath = findShortestPath(source, target);
-  //console.log(shortestPath.length);
+
   let shortestDistance = calculateDistance(shortestPath, false);
 
   let shortestElevationGain = calculateElevations(shortestPath, false);
@@ -194,7 +194,6 @@ function calculateRequestPath(source, target, percentage, isMax) {
   };
 
   let walkDistance = haversine(start, end, { unit: "meter" });
-  console.log("distance+ " + walkDistance);
 
   if (shortestPath.lenght == 0) {
     return null;
@@ -291,7 +290,7 @@ function calculateDistance(path, isForward) {
 
   //get list of edges
   let edges = isForward ? pathToEdgeForWard(path) : pathToEdgeBackWard(path);
-  //console.log(edges);
+
   edges.forEach((edge) => {
     totalDistance += edge.data.distance;
   });
