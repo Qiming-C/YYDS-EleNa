@@ -187,6 +187,12 @@
     margin-bottom: 1rem;
 }
 
+.route_info_div{
+    justify-content: center;
+}
+
+
+
 @media only screen and (max-width: 1400px) {
     .container .left-side {
         width: 40%;
