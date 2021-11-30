@@ -199,7 +199,7 @@ function calculateRequestPath(source, target, percentage, isMax) {
     return null;
   }
 
-  if (walkDistance > 500 || shortestPath.length > 50) {
+  if (walkDistance > 500 || shortestPath.length > 20) {
     let path = pathToEdgeBackWard(shortestPath);
     let nodes = [];
     path.forEach((path) => {
