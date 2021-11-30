@@ -10,7 +10,6 @@ function checkGraph() {
 
 function findShortestPath(source, target) {
   let pathFinder = path.aStar(graph, {
-    oriented: true,
     distance(fromNode, toNode, link) {
       return link.data.distance;
     },
