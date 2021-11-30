@@ -228,13 +228,16 @@ function calculateRequestPath(source, target, percentage, isMax) {
       });
     }
 
-    //TODO: if plot -1 meaning no result
-
     //return the result
     let elevationGain = elevations[plot];
     let path = paths[plot];
     let dist = calculateDistance(path, true);
-    return { path: path, elevationGain: elevationGain, distance: dist };
+    return {
+      path: path,
+      elevationGain: elevationGain,
+      distance: dist,
+      shortestDistance: shortestDistance,
+    };
   }
 }
 
