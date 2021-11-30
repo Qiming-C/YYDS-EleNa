@@ -1,6 +1,7 @@
 let graph = require("./walkModel");
 let path = require("ngraph.path");
 const haversine = require("haversine");
+let manhattan = require("manhattan-distance");
 
 function checkGraph() {
   graph.forEachNode((node) => {
@@ -15,7 +16,7 @@ function findShortestPath(source, target) {
       return link.data.distance;
     },
     heuristic(fromNode, toNode) {
-      return toNode.data.elevation - fromNode.data.elevation;
+      return normal_distance(fromNode, toNode);
     },
   });
 
@@ -23,6 +24,27 @@ function findShortestPath(source, target) {
   let shortestPath = pathFinder.find(source, target);
 
   return shortestPath;
+}
+
+//normal distance formula
+function normal_distance(fromNode, toNode) {
+  let dx = fromNode.data.coordinates[0] - toNode.data.coordinates[1];
+  let dy = fromNode.data.coordinates[0] - toNode.data.coordinates[1];
+
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+//wrosen the result
+function manhattan_heuristic(fromNode, toNode) {
+  //manhattan distance
+  return (
+    manhattan(
+      fromNode.data.coordinates[0],
+      fromNode.data.coordinates[1],
+      toNode.data.coordinates[0],
+      toNode.data.coordinates[1]
+    ).slice(0, -2) * 1000
+  );
 }
 
 /**
@@ -151,7 +173,7 @@ function calculateRequestPath(source, target, percentage, isMax) {
 
   //compute the shortest path
   let shortestPath = findShortestPath(source, target);
-  //console.log(shortestPath.length);
+
   let shortestDistance = calculateDistance(shortestPath, false);
 
   let shortestElevationGain = calculateElevations(shortestPath, false);
@@ -172,7 +194,6 @@ function calculateRequestPath(source, target, percentage, isMax) {
   };
 
   let walkDistance = haversine(start, end, { unit: "meter" });
-  console.log("distance+ " + walkDistance);
 
   if (shortestPath.lenght == 0) {
     return null;
@@ -269,7 +290,7 @@ function calculateDistance(path, isForward) {
 
   //get list of edges
   let edges = isForward ? pathToEdgeForWard(path) : pathToEdgeBackWard(path);
-  //console.log(edges);
+
   edges.forEach((edge) => {
     totalDistance += edge.data.distance;
   });
