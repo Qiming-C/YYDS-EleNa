@@ -43,8 +43,6 @@ async function generateGraph(settings) {
 
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
 
-0
-
   //filter out the geometry type with point which is node
   let points = g.features.filter((obj) => obj.geometry.type === "Point");
   let ways = g.features.filter((obj) => obj.geometry.type === "LineString");

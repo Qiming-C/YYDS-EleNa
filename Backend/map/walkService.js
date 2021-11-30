@@ -1,6 +1,7 @@
 let graph = require("./walkModel");
 let path = require("ngraph.path");
 const haversine = require("haversine");
+let manhattan = require("manhattan-distance");
 
 function checkGraph() {
   graph.forEachNode((node) => {
@@ -15,7 +16,15 @@ function findShortestPath(source, target) {
       return link.data.distance;
     },
     heuristic(fromNode, toNode) {
-      return toNode.data.elevation - fromNode.data.elevation;
+      //manhattan distance
+      return (
+        manhattan(
+          fromNode.data.coordinates[0],
+          fromNode.data.coordinates[1],
+          toNode.data.coordinates[0],
+          toNode.data.coordinates[1]
+        ).slice(0, -2) * 1000
+      );
     },
   });
 
