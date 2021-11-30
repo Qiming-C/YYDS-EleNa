@@ -117,12 +117,15 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         document.getElementById("Route_title").innerHTML =
           maxOrMin + " route by " + type + ".";
         document.getElementById("table_distance").innerHTML =
-          (Math.round(data.distance) / 1000).toString() + " mile(s)";
+          (Math.round(data.distance)).toString() + " meter(s)";
         document.getElementById("table_elevation").innerHTML =
           Math.round(data.elevationGain).toString() + " meter(s)";
-        document.getElementById("table_percentage").innerHTML = "X %";
+          
+          //calculate the percentage distance
+         let percentage = ((data.distance - data.shortestDistance)/data.shortestDistance)*100;
+        document.getElementById("table_percentage").innerHTML = Math.round(percentage).toString()+" %";
         document.getElementById("table_node").innerHTML =
-          (data.path.length + 2).toString() + " node(s)";
+          (data.path.length + 2).toString() + " stop(s)";
       }
     } else console.log("fail in index");
   });
