@@ -99,7 +99,7 @@ function DFSUtils(source, target, isVisited, pathList, final, maxLength) {
   //TRUE indicates we only want the outgoing edge
   graph.forEachLinkedNode(
     source.id,
-    (linkedNode, link) => {
+    (linkedNode) => {
       adjacent.push(linkedNode);
     },
     true
