@@ -3,6 +3,9 @@ document.getElementById("min").addEventListener("click", min);
 document.getElementById("walk").addEventListener("click", walk);
 document.getElementById("car").addEventListener("click", car);
 document.getElementById("go").addEventListener("click", go);
+document.getElementById("Chen-github").addEventListener("click", linkToChen);
+document.getElementById("Lau-github").addEventListener("click", linkToLau);
+document.getElementById("Li-github").addEventListener("click", linkToLi);
 
 let type = null;
 let minBt = document.getElementById("min");
@@ -115,7 +118,7 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
           type = walkOrCar.replace("/", "");
         }
         document.getElementById("Route_title").innerHTML =
-          maxOrMin + " route by " + type + ".";
+          maxOrMin.toUpperCase() + " route by " + type.toUpperCase() + ".";
         document.getElementById("table_distance").innerHTML =
           (Math.round(data.distance)).toString() + " meter(s)";
         document.getElementById("table_elevation").innerHTML =
@@ -264,9 +267,9 @@ function buildMap() {
 
     fetch(
       "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-        lat +
-        "&lon=" +
-        lon,
+      lat +
+      "&lon=" +
+      lon,
       requestOptions
     )
       .then((response) => response.text())
@@ -325,4 +328,14 @@ function buildMap() {
     }
   }
   map.on("click", onMapClick);
+}
+
+function linkToChen() {
+  window.location.href = "https://github.com/Qiming-C/";
+}
+function linkToLau() {
+  window.location.href = "https://github.com/hilshong2580/";
+}
+function linkToLi() {
+  window.location.href = "https://github.com/Jiafeng-Li95/";
 }
