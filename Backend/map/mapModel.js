@@ -2,43 +2,13 @@ const graphFromOsm = require("graph-from-osm");
 const haversine = require("haversine");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
-let createGraph = require("ngraph.graph");
 
-const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
-const CAR_HIGHWAY = [
-  "primary",
-  "motorway",
-  "secondary",
-  "tertiary",
-  "unclassified",
-  "residential",
-  "trunk",
-  "service",
-  "road",
-  "primary_link",
-  "trunk_link",
-  "secondary_link",
-  "tertiary_link",
-];
-
-//configuration for bounding box
-const settings = {
-  // Define my settings
-  bbox: UMA_BOX,
-  highways: CAR_HIGHWAY,
-  timeout: 2000000000,
-  maxContentLength: 3000000000,
-};
-
-//actual graph we are constructing
-let graph = createGraph();
 //g for holding the original parse data from osm
 let g = null;
-generateGraph(settings);
 
 //covert OSM xml data into json like graph structure
 //and convert to actual graph data structure
-async function generateGraph(settings) {
+async function generateGraph(settings, graph) {
   const osmData = await graphFromOsm.getOsmData(settings); // Import OSM raw data
 
   g = graphFromOsm.osmDataToGraph(osmData); // Here is your graph
@@ -56,7 +26,7 @@ async function generateGraph(settings) {
   });
 
   //add elevation information to vertices
-  let elevations = await getElevations();
+  let elevations = await getElevations(graph);
   let index = 0;
   graph.forEachNode((node) => {
     node.data.elevation = elevations.results[index++].elevation;
@@ -107,7 +77,7 @@ async function generateGraph(settings) {
  * This function will fetch serveral times in order to get the complete elevation
  * @returns the lists of all nodes elevation gain
  */
-async function getElevations() {
+async function getElevations(graph) {
   let answer = {
     results: [],
   };
@@ -163,4 +133,4 @@ async function getElevations() {
   return answer;
 }
 
-module.exports = graph;
+module.exports = { generateGraph };

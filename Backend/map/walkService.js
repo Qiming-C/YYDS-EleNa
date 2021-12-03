@@ -1,6 +1,12 @@
-let graph = require("./walkModel");
+let { generateGraph } = require("./mapModel");
+let { WALK_settings } = require("./enum");
+let createGraph = require("ngraph.graph");
+
 let path = require("ngraph.path");
 const haversine = require("haversine");
+
+let graph = createGraph();
+generateGraph(WALK_settings, graph);
 
 let { harversine_heuristic } = require("./heuristic");
 

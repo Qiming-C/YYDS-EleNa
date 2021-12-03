@@ -1,6 +1,11 @@
-let graph = require("./mapModel");
+let { generateGraph } = require("./mapModel");
+let { CAR_settings } = require("./enum");
 let path = require("ngraph.path");
 let { harversine_heuristic } = require("./heuristic");
+let createGraph = require("ngraph.graph");
+
+let graph = createGraph();
+generateGraph(CAR_settings, graph);
 
 function checkGraph() {
   graph.forEachNode((node) => {
