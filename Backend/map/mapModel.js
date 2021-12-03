@@ -66,6 +66,8 @@ async function generateGraph(settings, graph) {
     let elevation = node2.data.elevation - node1.data.elevation;
     link.data.elevation = elevation;
   });
+
+  console.log("Data loaded");
 }
 
 /**
