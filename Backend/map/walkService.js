@@ -1,9 +1,8 @@
 let { generateGraph } = require("./mapModel");
 let createGraph = require("ngraph.graph");
-
+let { harversine_heuristic } = require("./heuristic");
 let path = require("ngraph.path");
 const haversine = require("haversine");
-
 let graph;
 
 /**
@@ -15,12 +14,12 @@ async function init(settings) {
   await generateGraph(settings, graph);
 }
 
-let { harversine_heuristic } = require("./heuristic");
-
 function checkGraph() {
-  graph.forEachNode((node) => {
-    console.log(node.data);
+  let i = 0;
+  graph.forEachNode(() => {
+    i++;
   });
+  return i;
 }
 
 function findShortestPath(source, target) {

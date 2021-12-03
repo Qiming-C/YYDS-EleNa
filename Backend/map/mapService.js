@@ -16,9 +16,11 @@ async function init(settings) {
 }
 
 function checkGraph() {
-  graph.forEachNode((node) => {
-    console.log(node.data);
+  let i = 0;
+  graph.forEachNode(() => {
+    i++;
   });
+  return i;
 }
 
 function findShortestPath(source, target) {

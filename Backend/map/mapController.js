@@ -7,6 +7,7 @@ const { CAR_settings, WALK_settings } = require("./enum");
 //init the services
 mapService.init(CAR_settings);
 walkService.init(WALK_settings);
+console.log("Data has been processed successfully");
 /**
  * route for computing the maximum elevation gain route
  * @Body: The start node coordinates with osmId

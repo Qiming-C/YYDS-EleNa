@@ -8,17 +8,17 @@ describe("vehicle navigation map features", async function () {
     await carService.init(CAR_settings);
   });
 
-  describe("Number of nodes", async function () {
+  //car data model test suites
+  describe("car data model", async function () {
     it("should have the correct number of nodes of 1100", async function () {
       expect(carService.checkGraph()).equal(1100);
     });
   });
 
-  describe("find the shortest path", async function () {
-    let shortestPath = carService.findShortestPath(20, 10);
-
+  //vehicle service test suites
+  describe("vehicle service", async function () {
     it("should return the shortest path length ", async function () {
-      expect(shortestPath.length).to.be.equal(15);
+      expect(carService.findShortestPath(20, 10).length).to.be.equal(15);
     });
   });
 });
