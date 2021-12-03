@@ -2,6 +2,11 @@ const express = require("express");
 const mapRouter = express.Router();
 const mapService = require("./mapService");
 const walkService = require("./walkService");
+const { CAR_settings, WALK_settings } = require("./enum");
+
+//init the services
+mapService.init(CAR_settings);
+walkService.init(WALK_settings);
 /**
  * route for computing the maximum elevation gain route
  * @Body: The start node coordinates with osmId

@@ -1,11 +1,19 @@
 let { generateGraph } = require("./mapModel");
-let { CAR_settings } = require("./enum");
 let path = require("ngraph.path");
 let { harversine_heuristic } = require("./heuristic");
 let createGraph = require("ngraph.graph");
 
-let graph = createGraph();
-generateGraph(CAR_settings, graph);
+//actual graph we are using
+let graph;
+
+/**
+ *
+ * @param {*} settings  the open street map configuration
+ */
+async function init(settings) {
+  graph = createGraph();
+  await generateGraph(settings, graph);
+}
 
 function checkGraph() {
   graph.forEachNode((node) => {
@@ -287,6 +295,7 @@ function pathToEdgeForWard(path) {
 }
 
 module.exports = {
+  init,
   checkGraph,
   findShortestPath,
   DFSUtils,
