@@ -83,7 +83,7 @@ function onMapClick(e) {
       shadowSize: [41, 41]
     });
 
-    document.getElementById("source").value = e.latlng.toString();
+    document.getElementById("source").value = e.latlng.toString().replace("LatLng(", "").replace(")", "");
     counter += 1;
 
     if (markerOutset !== null) {
@@ -108,7 +108,7 @@ function onMapClick(e) {
     });
 
 
-    document.getElementById("destination").value = e.latlng.toString();
+    document.getElementById("destination").value = e.latlng.toString().replace("LatLng(", "").replace(")", "");
     counter -= 1;
 
     if (markerDestination !== null) {
