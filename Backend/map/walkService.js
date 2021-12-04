@@ -187,7 +187,7 @@ function calculateRequestPath(source, target, percentage, isMax) {
 
   let walkDistance = haversine(start, end, { unit: "meter" });
 
-  if (shortestPath.lenght == 0) {
+  if (shortestPath.length == 0) {
     return null;
   }
 
