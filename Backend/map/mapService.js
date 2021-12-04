@@ -1,11 +1,26 @@
-let graph = require("./mapModel");
+let { generateGraph } = require("./mapModel");
 let path = require("ngraph.path");
 let { harversine_heuristic } = require("./heuristic");
+let createGraph = require("ngraph.graph");
+
+//actual graph we are using
+let graph;
+
+/**
+ *
+ * @param {*} settings  the open street map configuration
+ */
+async function init(settings) {
+  graph = createGraph();
+  await generateGraph(settings, graph);
+}
 
 function checkGraph() {
-  graph.forEachNode((node) => {
-    console.log(node.data);
+  let i = 0;
+  graph.forEachNode(() => {
+    i++;
   });
+  return i;
 }
 
 function findShortestPath(source, target) {
@@ -282,6 +297,7 @@ function pathToEdgeForWard(path) {
 }
 
 module.exports = {
+  init,
   checkGraph,
   findShortestPath,
   DFSUtils,

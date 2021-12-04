@@ -1,13 +1,25 @@
-let graph = require("./walkModel");
+let { generateGraph } = require("./mapModel");
+let createGraph = require("ngraph.graph");
+let { harversine_heuristic } = require("./heuristic");
 let path = require("ngraph.path");
 const haversine = require("haversine");
+let graph;
 
-let { harversine_heuristic } = require("./heuristic");
+/**
+ *
+ * @param {*} settings
+ */
+async function init(settings) {
+  graph = createGraph();
+  await generateGraph(settings, graph);
+}
 
 function checkGraph() {
-  graph.forEachNode((node) => {
-    console.log(node.data);
+  let i = 0;
+  graph.forEachNode(() => {
+    i++;
   });
+  return i;
 }
 
 function findShortestPath(source, target) {
@@ -312,6 +324,7 @@ function pathToEdgeForWard(path) {
 }
 
 module.exports = {
+  init,
   checkGraph,
   findShortestPath,
   DFSUtils,
