@@ -1,6 +1,6 @@
 # YYDS-Elevation Gain Navigation 
 
-Elena is a full stack application that runs on Express. You can select the start and end points and then calculate the minimum elevation gain or maximum elevation gain by limiting the percentage of the shortest path. The app is used by runners, bikers, walkers and drivers. Users have different options to decide if they want to find a smoother path or a steeper path.
+Elena is an app for computing the elevation gain in map navigation that runs on Express Server. You can select the start and end points and then calculate the minimum elevation gain or maximum elevation gain by limiting the percentage of the shortest path. The app is used by runners, bikers, walkers and drivers. Users have different options to decide if they want to find a smoother path or a steeper path.
 
 ## Build
 
@@ -8,6 +8,41 @@ Use `npm` to install all necessary dependencies
 
 ```shell
 npm install
+```
+
+
+
+## Bounding Box 
+
+Due to the computation power limit, this app is restricted to be UMASS Amherst area. If you want to change the boundary.  Go to `enum.js` where you can specify the boundary as `left,bottom,right,top` 
+
+As example here 
+
+```javascript
+const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
+const CAR_HIGHWAY = [
+  "primary",
+  "motorway",
+  "secondary",
+  "tertiary",
+  "unclassified",
+  "residential",
+  "trunk",
+  "service",
+  "road",
+  "primary_link",
+  "trunk_link",
+  "secondary_link",
+  "tertiary_link",
+];
+
+const CAR_settings = {
+  // Define my settings
+  bbox: UMA_BOX,
+  highways: CAR_HIGHWAY,
+  timeout: 2000000000,
+  maxContentLength: 3000000000,
+};
 ```
 
 
