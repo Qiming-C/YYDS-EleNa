@@ -107,7 +107,6 @@ function onMapClick(e) {
       shadowSize: [41, 41]
     });
 
-
     document.getElementById("destination").value = e.latlng.toString().replace("LatLng(", "").replace(")", "");
     counter -= 1;
 

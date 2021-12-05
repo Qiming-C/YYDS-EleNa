@@ -27,45 +27,70 @@ function go() {
   } else {
     //get latlngs
     let source_l1, source_l2, des_l1, des_l2;
-    buildMap();
+    
     //get OSM id
     const storage = window.localStorage;
     let outset = storage.getItem("outset");
     let destination = storage.getItem("Destination");
 
-    let words = document
-      .getElementById("source")
-      .value.replace("LatLng(", "")
-      .split(",");
+    let words = document.getElementById("source").value.split(",");
     source_l1 = words[0].replace(/\s/g, "");
-    source_l2 = words[1].replace(/\s/g, "").replace(")", "");
-    words = document
-      .getElementById("destination")
-      .value.replace("LatLng(", "")
-      .split(",");
+    source_l2 = words[1].replace(/\s/g, "");
+
+    words = document.getElementById("destination").value.split(",");
     des_l1 = words[0].replace(/\s/g, "");
-    des_l2 = words[1].replace(/\s/g, "").replace(")", "");
+    des_l2 = words[1].replace(/\s/g, "");
 
     //short
     let sliderValue = document.getElementById("myRange").value;
     sliderValue = (sliderValue - 100) / 100;
 
-    // raw data set
-    const raw = {
-      start: {
-        coordinates: [source_l2, source_l1],
-        osmId: outset,
-      },
-      end: {
-        coordinates: [des_l2, des_l1],
-        osmId: destination,
-      },
-      percentage: sliderValue,
-    };
+    console.log(parseFloat(source_l1));
 
-    // call backend fetch data for node
-    postData(raw, type, walkOrCar);
+    let checkBool = checkInput(source_l1, source_l2, des_l1, des_l2);
+
+    if (checkBool[0] || checkBool[1]) {
+      if (checkBool[0]) alert("coordinate is not number");
+
+      if (checkBool[1]) alert("coordinate out of range");
+    } else {
+      buildMap();
+
+      // raw data set
+      const raw = {
+        start: {
+          coordinates: [source_l2, source_l1],
+          osmId: outset,
+        },
+        end: {
+          coordinates: [des_l2, des_l1],
+          osmId: destination,
+        },
+        percentage: sliderValue,
+      };
+
+      // call backend fetch data for node
+      postData(raw, type, walkOrCar);
+    }
   }
+}
+
+function checkInput(s1, s2, d1, d2) {
+  let bool = [false, false];
+
+  if (isNaN(s1) || isNaN(s2) || isNaN(d1) || isNaN(d2)) bool[0] = true;
+
+  if (parseFloat(s1) < 42.373775 || parseFloat(s1) > 42.402095) bool[1] = true;
+
+  if (parseFloat(d1) < 42.373775 || parseFloat(d1) > 42.402095) bool[1] = true;
+
+  if (parseFloat(s2) < -72.541988 || parseFloat(s2) > -72.515408)
+    bool[1] = true;
+
+  if (parseFloat(d2) < -72.541988 || parseFloat(d2) > -72.515408)
+    bool[1] = true;
+
+  return bool;
 }
 
 async function postData(JSONData, maxOrMin, walkOrCar) {
@@ -120,13 +145,16 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         document.getElementById("Route_title").innerHTML =
           maxOrMin.toUpperCase() + " route by " + type.toUpperCase() + ".";
         document.getElementById("table_distance").innerHTML =
-          (Math.round(data.distance)).toString() + " meter(s)";
+          Math.round(data.distance).toString() + " meter(s)";
         document.getElementById("table_elevation").innerHTML =
           Math.round(data.elevationGain).toString() + " meter(s)";
-          
-          //calculate the percentage distance
-         let percentage = ((data.distance - data.shortestDistance)/data.shortestDistance)*100;
-        document.getElementById("table_percentage").innerHTML = Math.round(percentage).toString()+" %";
+
+        //calculate the percentage distance
+        let percentage =
+          ((data.distance - data.shortestDistance) / data.shortestDistance) *
+          100;
+        document.getElementById("table_percentage").innerHTML =
+          Math.round(percentage).toString() + " %";
         document.getElementById("table_node").innerHTML =
           (data.path.length + 2).toString() + " stop(s)";
       }
@@ -267,9 +295,9 @@ function buildMap() {
 
     fetch(
       "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-      lat +
-      "&lon=" +
-      lon,
+        lat +
+        "&lon=" +
+        lon,
       requestOptions
     )
       .then((response) => response.text())
@@ -295,7 +323,10 @@ function buildMap() {
 
     //set the turns of filling the latlng to the source or destination input fields
     if (counter == 1) {
-      document.getElementById("source").value = e.latlng.toString();
+      document.getElementById("source").value = e.latlng
+        .toString()
+        .replace("LatLng(", "")
+        .replace(")", "");
       counter += 1;
 
       if (markerOutset !== null) {
@@ -310,7 +341,10 @@ function buildMap() {
 
       get_id(latlng1, latlng2, "outset");
     } else {
-      document.getElementById("destination").value = e.latlng.toString();
+      document.getElementById("destination").value = e.latlng
+        .toString()
+        .replace("LatLng(", "")
+        .replace(")", "");
       counter -= 1;
 
       if (markerDestination !== null) {
