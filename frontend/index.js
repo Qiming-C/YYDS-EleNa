@@ -27,7 +27,7 @@ function go() {
   } else {
     //get latlngs
     let source_l1, source_l2, des_l1, des_l2;
-    
+
     //get OSM id
     const storage = window.localStorage;
     let outset = storage.getItem("outset");
@@ -119,21 +119,51 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         document.getElementById("table_percentage").innerHTML = "";
         document.getElementById("table_node").innerHTML = "";
       } else {
-        let latlngs = [
+
+        //render the line by dash line and line
+        let node = data.path;
+        let startDash = [
           [JSONData.start.coordinates[1], JSONData.start.coordinates[0]],
+          [node[0].data.coordinates[0], node[0].data.coordinates[1]],
         ];
+
+        let centerLine = [];
         for (let i = 0; i < data.path.length; i++) {
-          latlngs.push([
-            data.path[i].data.coordinates[0],
-            data.path[i].data.coordinates[1],
+          centerLine.push([
+            node[i].data.coordinates[0],
+            node[i].data.coordinates[1],
           ]);
         }
-        latlngs.push([
-          JSONData.end.coordinates[1],
-          JSONData.end.coordinates[0],
-        ]);
 
-        polyline = L.polyline(latlngs, { color: "blue" }).addTo(map);
+        let endDash = [
+          [
+            node[node.length - 1].data.coordinates[0],
+            node[node.length - 1].data.coordinates[1],
+          ],
+          [JSONData.end.coordinates[1], JSONData.end.coordinates[0]],
+        ];
+
+        let centerL = L.polyline(centerLine, {
+          color: "blue",
+          weight: "5",
+        }).addTo(map);
+
+        let startL = L.polyline(startDash, {
+          color: "black",
+          weight: "3",
+          dashArray: "5, 5",
+          dashOffset: "0",
+        }).addTo(map);
+
+        let endL = L.polyline(endDash, {
+          color: "black",
+          weight: "3",
+          dashArray: "5, 5",
+          dashOffset: "0",
+        }).addTo(map);
+        //////  end of render line //////
+
+
 
         //render the route info to table
         let type = "";
@@ -157,6 +187,9 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
           Math.round(percentage).toString() + " %";
         document.getElementById("table_node").innerHTML =
           (data.path.length + 2).toString() + " stop(s)";
+        //////  end of render route table  //////
+
+
       }
     } else console.log("fail in index");
   });
