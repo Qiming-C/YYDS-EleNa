@@ -28,6 +28,7 @@ function go() {
   ) {
     //popup show 
     document.getElementById("popup_box").style.display = "initial";
+    window.setTimeout(popup_timeout, 2000);
   } else {
     //get latlngs
     let source_l1, source_l2, des_l1, des_l2;
@@ -65,6 +66,7 @@ function go() {
       // if (checkBool[0]) alert("coordinate is not number");
       // if (checkBool[1]) alert("coordinate out of range");
       document.getElementById("popup_box").style.display = "initial";
+      window.setTimeout(popup_timeout, 2000);
     } else {
       buildMap();
 
@@ -417,4 +419,8 @@ function linkToLau() {
 }
 function linkToLi() {
   window.location.href = "https://github.com/Jiafeng-Li95/";
+}
+
+function popup_timeout() {
+  document.getElementById("popup_box").style.display = "none";
 }
