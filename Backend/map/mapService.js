@@ -166,66 +166,70 @@ function closestNode(source, target) {
 }
 
 function calculateRequestPath(source, target, percentage, isMax) {
-  let closest = closestNode(source, target);
-  source = closest.source;
-  target = closest.target;
+  try {
+    let closest = closestNode(source, target);
+    source = closest.source;
+    target = closest.target;
 
-  //compute the shortest path
-  let shortestPath = findShortestPath(source, target);
-  let shortestDistance = calculateDistance(shortestPath, false);
-  //allowing the DFS find extra three depths more
-  let maxLength = shortestPath.length;
+    //compute the shortest path
+    let shortestPath = findShortestPath(source, target);
+    let shortestDistance = calculateDistance(shortestPath, false);
+    //allowing the DFS find extra three depths more
+    let maxLength = shortestPath.length;
 
-  if (shortestPath.length == 0) {
+    if (shortestPath.length == 0) {
+      return null;
+    }
+
+    //compute all the paths
+    let paths = findAllPaths(source, target, maxLength);
+
+    //compute all the elevations
+    let elevations = [];
+    paths.forEach((path) => {
+      let elevationGain = calculateElevations(path, true);
+      elevations.push(elevationGain);
+    });
+    let plot = -1;
+    if (isMax) {
+      let current = Number.MIN_SAFE_INTEGER;
+      elevations.forEach((elevation, index) => {
+        let distance = calculateDistance(paths[index], true);
+
+        if (distance <= shortestDistance * (1 + percentage)) {
+          if (current <= elevation) {
+            current = elevation;
+            plot = index;
+          }
+        }
+      });
+    } else {
+      let current = Number.MAX_SAFE_INTEGER;
+      elevations.forEach((elevation, index) => {
+        let distance = calculateDistance(paths[index], true);
+
+        if (distance <= shortestDistance * (1 + percentage)) {
+          if (current >= elevation) {
+            current = elevation;
+            plot = index;
+          }
+        }
+      });
+    }
+
+    //return the result
+    let elevationGain = elevations[plot];
+    let path = paths[plot];
+    let dist = calculateDistance(path, true);
+    return {
+      path: path,
+      elevationGain: elevationGain,
+      distance: dist,
+      shortestDistance: shortestDistance,
+    };
+  } catch (e) {
     return null;
   }
-
-  //compute all the paths
-  let paths = findAllPaths(source, target, maxLength);
-
-  //compute all the elevations
-  let elevations = [];
-  paths.forEach((path) => {
-    let elevationGain = calculateElevations(path, true);
-    elevations.push(elevationGain);
-  });
-  let plot = -1;
-  if (isMax) {
-    let current = Number.MIN_SAFE_INTEGER;
-    elevations.forEach((elevation, index) => {
-      let distance = calculateDistance(paths[index], true);
-
-      if (distance <= shortestDistance * (1 + percentage)) {
-        if (current <= elevation) {
-          current = elevation;
-          plot = index;
-        }
-      }
-    });
-  } else {
-    let current = Number.MAX_SAFE_INTEGER;
-    elevations.forEach((elevation, index) => {
-      let distance = calculateDistance(paths[index], true);
-
-      if (distance <= shortestDistance * (1 + percentage)) {
-        if (current >= elevation) {
-          current = elevation;
-          plot = index;
-        }
-      }
-    });
-  }
-
-  //return the result
-  let elevationGain = elevations[plot];
-  let path = paths[plot];
-  let dist = calculateDistance(path, true);
-  return {
-    path: path,
-    elevationGain: elevationGain,
-    distance: dist,
-    shortestDistance: shortestDistance,
-  };
 }
 
 /**

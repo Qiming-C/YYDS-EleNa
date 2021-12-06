@@ -32,6 +32,54 @@ walkService.init(WALK_settings);
  * NOTES: remember to cat data to proper type 
  */
 
+/**
+ * @swagger
+ * tags:
+ *  name: Map Routes
+ * /api/map/max:
+ *  post:
+ *   tags: [Map Routes]
+ *   description: request the maximum elevation gain
+ *   consumes:
+ *   - "application/json"
+ *   produces:
+ *   - "application/json"
+ *   parameters:
+ *   - in: "body"
+ *     name: "body"
+ *     description: "start and end point with lat,lon. percentage from 0-1"
+ *     required: true,
+ *     schema:
+ *        type: object
+ *        properties:
+ *          start:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -83
+ *                  - 42
+ *          end:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -73
+ *                  - 42
+ *          percentage:
+ *            type: number
+ *            default: 0.5
+ *   responses:
+ *         default:
+ *            description: A successful response
+ *
+ */
 mapRouter.post("/max", async (req, res) => {
   //flip the coordinates
   let source = {
@@ -49,9 +97,60 @@ mapRouter.post("/max", async (req, res) => {
     req.body.percentage,
     true
   );
-  res.status(200).json(result);
+
+  result
+    ? res.status(200).json(result)
+    : res.status(400).json({ message: "invalid request" });
 });
 
+/**
+ * @swagger
+ * tags:
+ *  name: Map Routes
+ * /api/map/min:
+ *  post:
+ *   tags: [Map Routes]
+ *   description: request the minimum elevation gain
+ *   consumes:
+ *   - "application/json"
+ *   produces:
+ *   - "application/json"
+ *   parameters:
+ *   - in: "body"
+ *     name: "body"
+ *     description: "start and end point with lat,lon. percentage from 0-1"
+ *     required: true,
+ *     schema:
+ *        type: object
+ *        properties:
+ *          start:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -83
+ *                  - 42
+ *          end:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -73
+ *                  - 42
+ *          percentage:
+ *            type: number
+ *            default: 0.5
+ *   responses:
+ *    200:
+ *        description: A successful response
+ *
+ */
 mapRouter.post("/min", async (req, res) => {
   //flip the coordinates
   let source = {
@@ -69,9 +168,59 @@ mapRouter.post("/min", async (req, res) => {
     req.body.percentage,
     false
   );
-  res.status(200).json(result);
+  result
+    ? res.status(200).json(result)
+    : res.status(400).json({ message: "invalid request" });
 });
 
+/**
+ * @swagger
+ * tags:
+ *  name: Map Routes
+ * /api/map/walk/max:
+ *  post:
+ *   tags: [Map Routes]
+ *   description: request the maximum elevation gain for walking
+ *   consumes:
+ *   - "application/json"
+ *   produces:
+ *   - "application/json"
+ *   parameters:
+ *   - in: "body"
+ *     name: "body"
+ *     description: "start and end point with lat,lon. percentage from 0-1"
+ *     required: true,
+ *     schema:
+ *        type: object
+ *        properties:
+ *          start:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -83
+ *                  - 42
+ *          end:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -73
+ *                  - 42
+ *          percentage:
+ *            type: number
+ *            default: 0.5
+ *   responses:
+ *    200:
+ *        description: A successful response
+ *
+ */
 mapRouter.post("/walk/max", async (req, res) => {
   //flip the coordinates
   let source = {
@@ -89,9 +238,59 @@ mapRouter.post("/walk/max", async (req, res) => {
     req.body.percentage,
     true
   );
-  res.status(200).json(result);
+  result
+    ? res.status(200).json(result)
+    : res.status(400).json({ message: "invalid request" });
 });
 
+/**
+ * @swagger
+ * tags:
+ *  name: Map Routes
+ * /api/map/walk/map:
+ *  post:
+ *   tags: [Map Routes]
+ *   description: request the minimum elevation gain for walking
+ *   consumes:
+ *   - "application/json"
+ *   produces:
+ *   - "application/json"
+ *   parameters:
+ *   - in: "body"
+ *     name: "body"
+ *     description: "start and end point with lat,lon. percentage from 0-1"
+ *     required: true,
+ *     schema:
+ *        type: object
+ *        properties:
+ *          start:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -83
+ *                  - 42
+ *          end:
+ *            type: object
+ *            properties:
+ *              coordinates:
+ *                type: array
+ *                items:
+ *                  type: number
+ *                default:
+ *                  - -73
+ *                  - 42
+ *          percentage:
+ *            type: number
+ *            default: 0.5
+ *   responses:
+ *    200:
+ *        description: A successful response
+ *
+ */
 mapRouter.post("/walk/min", async (req, res) => {
   //flip the coordinates
   let source = {
@@ -109,7 +308,9 @@ mapRouter.post("/walk/min", async (req, res) => {
     req.body.percentage,
     false
   );
-  res.status(200).json(result);
+  result
+    ? res.status(200).json(result)
+    : res.status(400).json({ message: "invalid request" });
 });
 
 module.exports = mapRouter;
