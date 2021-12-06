@@ -159,99 +159,103 @@ function closestNode(source, target) {
 }
 
 function calculateRequestPath(source, target, percentage, isMax) {
-  let closest = closestNode(source, target);
-  source = closest.source;
-  target = closest.target;
+  try {
+    let closest = closestNode(source, target);
+    source = closest.source;
+    target = closest.target;
 
-  //compute the shortest path
-  let shortestPath = findShortestPath(source, target);
+    //compute the shortest path
+    let shortestPath = findShortestPath(source, target);
 
-  let shortestDistance = calculateDistance(shortestPath, false);
+    let shortestDistance = calculateDistance(shortestPath, false);
 
-  let shortestElevationGain = calculateElevations(shortestPath, false);
+    let shortestElevationGain = calculateElevations(shortestPath, false);
 
-  //compute the distance between two nodes, if they are 1000 meters long, we only return the shortest paths to limit the computation power
+    //compute the distance between two nodes, if they are 1000 meters long, we only return the shortest paths to limit the computation power
 
-  let s = graph.getNode(source);
-  let e = graph.getNode(target);
+    let s = graph.getNode(source);
+    let e = graph.getNode(target);
 
-  const start = {
-    latitude: s.data.coordinates[0],
-    longitude: s.data.coordinates[1],
-  };
-
-  const end = {
-    latitude: e.data.coordinates[0],
-    longitude: s.data.coordinates[1],
-  };
-
-  let walkDistance = haversine(start, end, { unit: "meter" });
-
-  if (shortestPath.length == 0) {
-    return null;
-  }
-
-  if (walkDistance > 500 || shortestPath.length > 20) {
-    let path = pathToEdgeBackWard(shortestPath);
-    let nodes = [];
-    path.forEach((path) => {
-      let node = graph.getNode(path.fromId);
-      nodes.push(node);
-    });
-
-    return {
-      path: nodes,
-      elevationGain: shortestElevationGain,
-      distance: shortestDistance,
-      shortestDistance: shortestDistance,
+    const start = {
+      latitude: s.data.coordinates[0],
+      longitude: s.data.coordinates[1],
     };
-  } else {
-    //compute all the paths
-    let paths = findAllPaths(source, target, shortestPath.length);
 
-    //compute all the elevations
-    let elevations = [];
-    paths.forEach((path) => {
-      let elevationGain = calculateElevations(path, true);
-      elevations.push(elevationGain);
-    });
-    let plot = -1;
-    if (isMax) {
-      let current = Number.MIN_SAFE_INTEGER;
-      elevations.forEach((elevation, index) => {
-        let distance = calculateDistance(paths[index], true);
+    const end = {
+      latitude: e.data.coordinates[0],
+      longitude: s.data.coordinates[1],
+    };
 
-        if (distance <= shortestDistance * (1 + percentage)) {
-          if (current <= elevation) {
-            current = elevation;
-            plot = index;
-          }
-        }
-      });
-    } else {
-      let current = Number.MAX_SAFE_INTEGER;
-      elevations.forEach((elevation, index) => {
-        let distance = calculateDistance(paths[index], true);
+    let walkDistance = haversine(start, end, { unit: "meter" });
 
-        if (distance <= shortestDistance * (1 + percentage)) {
-          if (current >= elevation) {
-            current = elevation;
-            plot = index;
-          }
-        }
-      });
+    if (shortestPath.length == 0) {
+      return null;
     }
 
-    //return the result
-    let elevationGain = elevations[plot];
-    let path = paths[plot];
-    let dist = calculateDistance(path, true);
-    return {
-      path: path,
-      elevationGain: elevationGain,
-      distance: dist,
-      shortestDistance: shortestDistance,
-    };
+    if (walkDistance > 500 || shortestPath.length > 20) {
+      let path = pathToEdgeBackWard(shortestPath);
+      let nodes = [];
+      path.forEach((path) => {
+        let node = graph.getNode(path.fromId);
+        nodes.push(node);
+      });
+
+      return {
+        path: nodes,
+        elevationGain: shortestElevationGain,
+        distance: shortestDistance,
+        shortestDistance: shortestDistance,
+      };
+    } else {
+      //compute all the paths
+      let paths = findAllPaths(source, target, shortestPath.length);
+
+      //compute all the elevations
+      let elevations = [];
+      paths.forEach((path) => {
+        let elevationGain = calculateElevations(path, true);
+        elevations.push(elevationGain);
+      });
+      let plot = -1;
+      if (isMax) {
+        let current = Number.MIN_SAFE_INTEGER;
+        elevations.forEach((elevation, index) => {
+          let distance = calculateDistance(paths[index], true);
+
+          if (distance <= shortestDistance * (1 + percentage)) {
+            if (current <= elevation) {
+              current = elevation;
+              plot = index;
+            }
+          }
+        });
+      } else {
+        let current = Number.MAX_SAFE_INTEGER;
+        elevations.forEach((elevation, index) => {
+          let distance = calculateDistance(paths[index], true);
+
+          if (distance <= shortestDistance * (1 + percentage)) {
+            if (current >= elevation) {
+              current = elevation;
+              plot = index;
+            }
+          }
+        });
+      }
+
+      //return the result
+      let elevationGain = elevations[plot];
+      let path = paths[plot];
+      let dist = calculateDistance(path, true);
+      return {
+        path: path,
+        elevationGain: elevationGain,
+        distance: dist,
+        shortestDistance: shortestDistance,
+      };
+    }
+  } catch (err) {
+    return null;
   }
 }
 
