@@ -6,6 +6,9 @@ document.getElementById("go").addEventListener("click", go);
 document.getElementById("Chen-github").addEventListener("click", linkToChen);
 document.getElementById("Lau-github").addEventListener("click", linkToLau);
 document.getElementById("Li-github").addEventListener("click", linkToLi);
+document.getElementById("popup_close").addEventListener("click", () => {
+  document.getElementById("popup_box").style.display = "none";
+});
 
 let type = null;
 let minBt = document.getElementById("min");
@@ -23,7 +26,8 @@ function go() {
     type === null ||
     walkOrCar == null
   ) {
-    alert("Need more information");
+    //popup show 
+    document.getElementById("popup_box").style.display = "initial";
   } else {
     //get latlngs
     let source_l1, source_l2, des_l1, des_l2;
@@ -33,26 +37,34 @@ function go() {
     let outset = storage.getItem("outset");
     let destination = storage.getItem("Destination");
 
+
+
     let words = document.getElementById("source").value.split(",");
-    source_l1 = words[0].replace(/\s/g, "");
-    source_l2 = words[1].replace(/\s/g, "");
+    if (words[1] !== undefined) {
+      source_l1 = words[0].replace(/\s/g, "");
+      source_l2 = words[1].replace(/\s/g, "");
+    }
+
 
     words = document.getElementById("destination").value.split(",");
-    des_l1 = words[0].replace(/\s/g, "");
-    des_l2 = words[1].replace(/\s/g, "");
+    if (words[1] !== undefined) {
+      des_l1 = words[0].replace(/\s/g, "");
+      des_l2 = words[1].replace(/\s/g, "");
+    }
+
 
     //short
     let sliderValue = document.getElementById("myRange").value;
     sliderValue = (sliderValue - 100) / 100;
 
-    console.log(parseFloat(source_l1));
+    // console.log(parseFloat(source_l1));
 
     let checkBool = checkInput(source_l1, source_l2, des_l1, des_l2);
 
     if (checkBool[0] || checkBool[1]) {
-      if (checkBool[0]) alert("coordinate is not number");
-
-      if (checkBool[1]) alert("coordinate out of range");
+      // if (checkBool[0]) alert("coordinate is not number");
+      // if (checkBool[1]) alert("coordinate out of range");
+      document.getElementById("popup_box").style.display = "initial";
     } else {
       buildMap();
 
@@ -328,9 +340,9 @@ function buildMap() {
 
     fetch(
       "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-        lat +
-        "&lon=" +
-        lon,
+      lat +
+      "&lon=" +
+      lon,
       requestOptions
     )
       .then((response) => response.text())
