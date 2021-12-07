@@ -26,9 +26,13 @@ function go() {
     type === null ||
     walkOrCar == null
   ) {
-    //popup show 
+    //popup show
+    document.getElementById("pop_up_header").innerText = "Missing information";
+    document.getElementById("pop_up_content").innerText =
+      "Check required input before process";
+
     document.getElementById("popup_box").style.display = "initial";
-    window.setTimeout(popup_timeout, 2000);
+    window.setTimeout(popup_timeout, 3000);
   } else {
     //get latlngs
     let source_l1, source_l2, des_l1, des_l2;
@@ -38,21 +42,17 @@ function go() {
     let outset = storage.getItem("outset");
     let destination = storage.getItem("Destination");
 
-
-
     let words = document.getElementById("source").value.split(",");
     if (words[1] !== undefined) {
       source_l1 = words[0].replace(/\s/g, "");
       source_l2 = words[1].replace(/\s/g, "");
     }
 
-
     words = document.getElementById("destination").value.split(",");
     if (words[1] !== undefined) {
       des_l1 = words[0].replace(/\s/g, "");
       des_l2 = words[1].replace(/\s/g, "");
     }
-
 
     //short
     let sliderValue = document.getElementById("myRange").value;
@@ -63,10 +63,18 @@ function go() {
     let checkBool = checkInput(source_l1, source_l2, des_l1, des_l2);
 
     if (checkBool[0] || checkBool[1]) {
-      // if (checkBool[0]) alert("coordinate is not number");
-      // if (checkBool[1]) alert("coordinate out of range");
+      if (checkBool[0]){
+        document.getElementById("pop_up_header").innerText = "Coordinate is not number!";
+        document.getElementById("pop_up_content").innerText = "Only number is acceptable for Source / Destination";
+      }
+
+      if (checkBool[1]) {
+        document.getElementById("pop_up_header").innerText = "Coordinate is out of range!";
+        document.getElementById("pop_up_content").innerText = "Please put the source / destination in side the red box area";
+      }
+
       document.getElementById("popup_box").style.display = "initial";
-      window.setTimeout(popup_timeout, 2000);
+      window.setTimeout(popup_timeout, 3000);
     } else {
       buildMap();
 
@@ -133,7 +141,6 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         document.getElementById("table_percentage").innerHTML = "";
         document.getElementById("table_node").innerHTML = "";
       } else {
-
         //render the line by dash line and line
         let node = data.path;
         let startDash = [
@@ -177,8 +184,6 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         }).addTo(map);
         //////  end of render line //////
 
-
-
         //render the route info to table
         let type = "";
         if (walkOrCar == "") {
@@ -202,9 +207,13 @@ async function postData(JSONData, maxOrMin, walkOrCar) {
         document.getElementById("table_node").innerHTML =
           (data.path.length + 2).toString() + " stop(s)";
         //////  end of render route table  //////
-
-
       }
+    } else if (response.status === 400) {
+      document.getElementById("pop_up_header").innerText = "Can't find route!";
+      document.getElementById("pop_up_content").innerText =
+        "Please try another search.";
+      document.getElementById("popup_box").style.display = "initial";
+      window.setTimeout(popup_timeout, 3000);
     } else console.log("fail in index");
   });
 }
@@ -342,9 +351,9 @@ function buildMap() {
 
     fetch(
       "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-      lat +
-      "&lon=" +
-      lon,
+        lat +
+        "&lon=" +
+        lon,
       requestOptions
     )
       .then((response) => response.text())
