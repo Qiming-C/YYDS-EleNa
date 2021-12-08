@@ -4,6 +4,10 @@ Elena is an app for computing the elevation gain in map navigation that runs on 
 
 ## Build
 
+MAKE SURE you in the  **`Backend`** folder
+
+
+
 Use `npm` to install all necessary dependencies
 
 ```shell
@@ -55,7 +59,14 @@ const CAR_settings = {
 npm start
 ```
 
-Once log shows `data is loaded,  you can visit localhost:3000 to make request through our front-end page or you can test the endpoint with **Postman** , or **Curl**
+Once log shows data is loaded,  you can open index.html via `frondend` folder to make request
+
+
+## Api doc
+
+More conveniently, we also use swagger to generate our api documentation, once the server is up. 
+
+Visit `localhost:3000/api-docs` to see the api doc and test it out 
 
 
 
