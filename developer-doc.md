@@ -18,7 +18,7 @@ For backend, we use n-tier layer architecture with the **presentation layer**(ou
 
 ### Front end
 
-For our front end, we use plain HTML/CSS with javascript. The program is a map of elevation gain Web-based application. We use Leaflet in our project which is the open-source JavaScript library for mobile-friendly and website-friendly interactive maps. Our program can provide a web mapping service. 
+For our front end, we use plain HTML/CSS with JavaScript. The program is a map of elevation gain Web-based application. We use Leaflet in our project which is the open-source JavaScript library for mobile-friendly and website-friendly interactive maps. Our program can provide a web mapping service. 
 
 #### Map coordinate positioning
 
@@ -35,17 +35,20 @@ https://nominatim.openstreetmap.org/reverse?lat=<value>&lon=<value>&<params>
 The lat and lon are latitude and longitude of a coordinate in projection. The return result contains an osm-id that we need in our project.
 
 #### Error Catching
-The program has several error-catching. It will check the input data is in the correct format, correct area, correct return status. For example, the coordinate is not the number, the coordinate is located out of bound, the backend return status's code is not 200, etc. In these conditions, the web will pop up a window as a warning and reminder.
+
+The program has several error-catching. It will check the input data is in the correct format, correct area, correct return status. For example, the coordinate is not the number, the coordinate is located out of bound, the backend return status's code is not 200, etc. In these conditions, the web will pop up a window as a warning and reminder in three seconds.
 
 #### Fetch data to Backend
 
 Collect the user input data and the OSM data, fetch them to the back end API to find the possible route. Then waiting for the back-end data return to render the route and route info into the message box if the return data is in success code status.
 
 #### The Map in Web
-For the map, we generate the different layers in the map to provide excellent visual effects. For example, a layer with the red line box appears in our map to bound the service area in the Umass Amherst, a layer with outset's marker and destination's marker that generating when the user clicks any location on the map, a layer for the route that rendering based on the API return data.
+
+For the map, we generate the different layers in the map to provide excellent visual effects. For example, a layer with the red line box appears in our map to bound the service area in the UMass Amherst, a layer with outset's marker and destination's marker that generating when the user clicks any location on the map, a layer for the route that rendering based on the API return data.
 
 #### The UI in Web
-For the UI, we customize the left sidebar and right sidebar to provide the user's friendly UI. The left sidebar will collect the user input data that include the coordinate, expectation of distance gain, travel mode, etc. Then the information box will display the searching result with the route's distance, elevation gain, the real percentage of distance increase, number of stops, etc. The right sidebar will display programmer info and the project's repository. It is able to hide when the web browser is lower than in a specific width.
+
+For the UI, we customize the left sidebar and right sidebar to provide the user's friendly UI. The left sidebar will collect the user input data that include the coordinate, expectation of distance gain, travel mode, etc. Then the information box will display the searching result with the route's distance, elevation gain, the real percentage of distance increase, number of stops, etc. The right sidebar will display group info, project description, programmer info. Users can click on the Github Icon direct to the programmer personal github page. It is able to hide when the web browser is lower than in a specific width.
 
 ### Back end
 
