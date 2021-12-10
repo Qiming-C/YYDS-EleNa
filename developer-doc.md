@@ -52,11 +52,11 @@ For the UI, we customize the left sidebar and right sidebar to provide the user'
 
 ### Back end
 
-For our back end, we are using express to set up the routing. The n-tier layer architecture allows us to have better scalability. The ability to upgrade and change independent layers does not affect other layers. We have **controller layer** that is receiving the http request, then pass down to corresponding **service layer** which do the business logic using the **data access layer** in this case is the map data set we generate for vehicle and pedestrian.
+For our back end, we are using express to set up the routing. The n-tier layer architecture allows us to have better scalability. The ability to upgrade and change independent layers does not affect other layers. We have **controller layer** that is receiving the http request, then passes it down to the corresponding **service layer** which does the business logic using the **data access layer** in this case is the map data set we generate for vehicle and pedestrian.
 
 #### Graph component
 
-We are using openStreetMap(OSM) Api to get the boundary box in UMASS Amherst Area. The response will get us the `xml` format of nodes and edges. We convert the xml file into json file. Then parse into graph data structure. In our graph, it is directed weight graph. Since road could be one way or both way. We store two types of map from OSM API. One for vehicle, one for pedestrian. Then we use [Harversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to compute the distance between two nodes. For the **elevation gain ** of each node, we use [open-elevation api](https://open-elevation.com/) . In terms of computing elevation gain among the paths, we only consider uphill elevation gain, ignoring the downhill elevation gain. Because if we are considering downhill elevation gain. We can go opposite direction to achieve the lower elevation gain instead of toward to destination. We want to have path that is not intentionally detour, but giving a path that is not getting away from the destination.
+We are using openStreetMap(OSM) Api to get the boundary box in UMASS Amherst Area. The response will get us the `xml` format of the nodes and edges. We convert the xml file into json file. Then parse into graph data structure. In our graph, it is a directed weight graph. Since road could be one way or both ways. We store two types of maps from OSM API. One for vehicle, one for pedestrian. Then we use [Harversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to compute the distance between two nodes. For the **elevation gain ** of each node, we use [open-elevation api](https://open-elevation.com/) . In terms of computing elevation gain among the paths, we only consider uphill elevation gain, ignoring downhill elevation gain. Because if we are considering downhill elevation gain. We can go opposite direction to achieve the lower elevation gain instead of toward to destination. We want to have a path that is not intentionally detouring, but gives a path that is not getting away from the destination.
 
 ##### Caching the graph
 
@@ -92,6 +92,14 @@ For testing, we using **Behavior Driven Development** style for writing the test
 
 ![image-20211207223011832](https://tva1.sinaimg.cn/large/008i3skNgy1gx69mp1of3j31tm0u0djk.jpg)
 
+
+
+## Debugging 
+
+During the development phase, we use the **developer tool** in browser and **postman** to help us ensure that the http request returns the correct value. Google Chrome's developer tools let us set breakpoints to debug our code when we have problems that can't be easily seen from the source code. The use of Postman allows us to ensure that the back-end endpoint can accept requests properly and return the corresponding data. Postman also supports multi-person collaboration, allowing members of our team to work together on the endpoint test created by each person.
+
+
+
 ## Api documentation
 
 As developer, the api documentation will greatly helpful for other developer knows how each endpoint is used and handled. We use [swagger ui](https://www.npmjs.com/package/swagger-ui-express) to generate a Api documentation which user can simulate the request without open up the frontend page.
@@ -102,13 +110,13 @@ As developer, the api documentation will greatly helpful for other developer kno
 
 ### A\* algorithm heuristic function
 
-We have compared three heuristic functions to see how close to the optimal. When the `Manhattan distance` heuristic function is used for A*, the result is not achieved to be optimal. Because the it requires the graph to be perfectly align the grid, which mean it will work optimally when the graph can only go four directions (left, right,down, up). When the `Euclidean distance` heuristic function is used, the result is optimal compare the google map result. Because the Euclidean distance formula is also called **Pythagorean distance**. Which we can move not only four directions but also diagonally. This can be implied in our graph, since each node is represented at (longitude, latitude). Lastly, we also implemented the `haversine formula` as heuristic function for `A star`. This give us the same result as Euclidean distance, since it computes the great-circle distance between two points on earth given by their *longitudes* and *latitudes\* . This will more predictable and accraucy for our A start function.
+We have compared three heuristic functions to see how close to optimal. When the **Manhattan distance** heuristic function is used for A*, the result is not achieved to be optimal. Because it requires the graph to be perfectly aligned with the grid, which means it will work optimally when the graph can only go in four directions (left, right, down, up). When the Euclidean distance heuristic function is used, the result is optimal comparing with the google map result. Because the Euclidean distance formula is also called Pythagorean distance. Which we can move not only in four directions, but also diagonally. This can be implied in our graph, since each node is represented as a (longitude, latitude) pair. Lastly, we also implemented the **haversine formula** as a heuristic function for A-star. This gives us the same result as Euclidean distance, since it computes the great-circle distance between two points on earth given by their longitudes and *latitudes* . This will be more predictable and accurate for our A start function.
 
 ### DFS scalability issue
 
-We also encounter issue when running DFS for walking data set. We realize that finding all the simple paths is essential NP-hard problem. The DFS will works fine if the node in the map is spare and less. However, in our walking data set, we have over 3200 nodes in the UMASS. This will cause DFS to run forever since the time complexity will be exponential growth. In this case, we decide if two nodes 's distance is over 500m or the number of node of shortest path is over 20. We will return the shortest path instead of letting user wait forever to get the response.
+We also encounter issue when running DFS for walking data sets. We realize that finding all the simple paths is an essential NP-hard problem. The DFS will work fine if the node in the map is spare and less. However, in our walking data set, we have over 3200 nodes in the UMASS. This will cause DFS to run forever since the time complexity will be exponential growth. In this case, we decide if two nodes 's distance is over 500m or the number of node of shortest path is over 20. We will return the shortest path instead of letting user wait forever to get the response.
 
-DFS works well in our car data set with over 1000 nodes. But we still add the constraint to it to prevent going too deep in the recursive call. We pass one more argument of `maxDepth` to allow the DFS only go `maxDepth` depth. And we only need 1000 possible paths, if we have 1000 possible paths in the call stack, we will terminate the DFS.
+DFS works well in our car data set with over 1000 nodes. But we still add the constraint to it to prevent going too deep in the recursive call. We pass one more argument of `maxDepth` to allow the DFS to only go `maxDepth` depth. And we only need 1000 possible paths, if we have 1000 possible paths in the call stack, we will terminate the DFS.
 
 > We intensively test the request by using Postman, then compare with result with different percentage limit with max/min elevation gain choice, it works well when it comes to render the path. We can see many different path among two points when altering the percentage of shortest path
 
