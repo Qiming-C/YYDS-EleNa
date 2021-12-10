@@ -247,7 +247,7 @@ mapRouter.post("/walk/max", async (req, res) => {
  * @swagger
  * tags:
  *  name: Map Routes
- * /api/map/walk/map:
+ * /api/map/walk/min:
  *  post:
  *   tags: [Map Routes]
  *   description: request the minimum elevation gain for walking
