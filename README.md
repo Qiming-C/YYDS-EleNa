@@ -1,12 +1,10 @@
-# YYDS-Elevation Gain Navigation 
+# YYDS-Elevation Gain Navigation
 
 Elena is an app for computing the elevation gain in map navigation that runs on Express Server. You can select the start and end points and then calculate the minimum elevation gain or maximum elevation gain by limiting the percentage of the shortest path. The app is used by runners, bikers, walkers and drivers. Users have different options to decide if they want to find a smoother path or a steeper path.
 
 ## Build
 
-MAKE SURE you in the  **`Backend`** folder
-
-
+MAKE SURE you in the **`Backend`** folder
 
 Use `npm` to install all necessary dependencies
 
@@ -14,13 +12,11 @@ Use `npm` to install all necessary dependencies
 npm install
 ```
 
+## Bounding Box
 
+Due to the computation power limit, this app is restricted to be UMASS Amherst area. If you want to change the boundary. Go to `enum.js` where you can specify the boundary as `left,bottom,right,top`
 
-## Bounding Box 
-
-Due to the computation power limit, this app is restricted to be UMASS Amherst area. If you want to change the boundary.  Go to `enum.js` where you can specify the boundary as `left,bottom,right,top` 
-
-As example here 
+As example here
 
 ```javascript
 const UMA_BOX = [-72.5381, 42.375, -72.5168, 42.398];
@@ -49,32 +45,23 @@ const CAR_settings = {
 };
 ```
 
-
-
 ## Run the server
-
-
 
 ```shell
 npm start
 ```
 
-Once log shows data is loaded,  you can open index.html via `frondend` folder to make request
-
+Once log shows data is loaded, you can open index.html via `frondend` folder to make request
 
 ## Api doc
 
-More conveniently, we also use swagger to generate our api documentation, once the server is up. 
+More conveniently, we also use swagger to generate our api documentation, once the server is up.
 
-Visit `localhost:3000/api-docs` to see the api doc and test it out 
-
-
+Visit `localhost:3000/api-docs` to see the api doc and test it out
 
 ## Run the test
 
-We provide two commands to run the test suites which produce the line coverage report power by [Istanbul](https://www.npmjs.com/package/nyc). 
-
-
+We provide two commands to run the test suites which produce the line coverage report power by [Istanbul](https://www.npmjs.com/package/nyc).
 
 ```
 npm run coverage-html
@@ -88,17 +75,17 @@ npm run coverage-text
 
 This command will run the test suites and generate the report in the console with plain text
 
+## Contributor
 
-
-## Contributor 
-
-| Avatars | Name | GitHub |
-| ------------- | ------------- | ------------- |
-| <img src="https://avatars.githubusercontent.com/u/70599965?v=4" width="120" height="120" /> | Jiafeng Li        | [Jiafeng-Li95](https://github.com/Jiafeng-Li95) |
+| Avatars                                                                                     | Name           | GitHub                                          |
+| ------------------------------------------------------------------------------------------- | -------------- | ----------------------------------------------- |
+| <img src="https://avatars.githubusercontent.com/u/70599965?v=4" width="120" height="120" /> | Jiafeng Li     | [Jiafeng-Li95](https://github.com/Jiafeng-Li95) |
 | <img src="https://avatars.githubusercontent.com/u/63128458?v=4" width="120" height="120" /> | Shing Hong Lau | [hilshong2580](https://github.com/hilshong2580) |
-| <img src="https://avatars.githubusercontent.com/u/49624964?v=4" width="120" height="120" /> | Qiming Chen | [Qiming-C](https://github.com/Qiming-C) |
+| <img src="https://avatars.githubusercontent.com/u/49624964?v=4" width="120" height="120" /> | Qiming Chen    | [Qiming-C](https://github.com/Qiming-C)         |
 
+## More details on developer documentation
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Developer-docs](/developer-doc.md)
 
 ## Contributing
 
@@ -107,5 +94,5 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
 
+[MIT](https://choosealicense.com/licenses/mit/)
